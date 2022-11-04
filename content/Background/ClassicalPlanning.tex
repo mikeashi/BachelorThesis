@@ -1,0 +1,209 @@
+\subsection{Classical Planning}
+
+As a means of introduction, we will explore classical planning, 
+which refers to the most basic form of automated planning.
+In order to avoid the complexity of the real world, classical 
+planning deals with an abstract model of the environment, 
+imposing a number of restrictive assumptions:
+
+\begin{itemize}
+    \item 
+    \textbf{Finite, observable and static:}
+    The environment has only a finite number of states and actions. The current state of the environment is known to the agent and it can not be changed without an action initiated by the agent.
+
+    \item 
+    \textbf{Deterministic, no uncertainty:}
+    The agent can predict with certainty the changes of the current state if a given action is preformed.
+
+    \item 
+    \textbf{Implicit time:}
+    No explicit model of time. There is only a linear sequence of instantaneous states.
+\end{itemize}
+
+We can now introduce the formal definition of classical planning. 
+The formal structures we use are heavily influenced by formal definitions 
+described in \cite{AutomatedPlanningTheoryghallab2006}\cite{OverviewHierarchicalTaskgeorgievski2014}\cite{alnazer2019htn}. 
+Before doing that we need to define some elementary structures first:
+
+
+\begin{Tdef}[Predicate]
+    A predicate $p$ is defined as follows: $p= \langle symbol(p), terms(p) \rangle$, where:
+    \vspace{-0.5em}
+    \begin{compactitem} 
+        \item 
+        $symbol(p)$ is the predicate symbol.
+        \item 
+        $terms(p)$ is a set of terms such that $terms(p) = \langle \tau_1, \tau_2, \dots, \tau_n \rangle$.
+        \item 
+        A term is either:
+        \begin{compactitem}
+            \item 
+            A constant $co \in \mathcal{CO}$, where $\mathcal{CO}$ is a finite set of constants.
+            \item 
+            A variable $v \in \mathcal{V}$, where $\mathcal{V}$ is an infinite set of variables.
+        \end{compactitem}
+    \end{compactitem}
+    \vspace{-0.5em}
+    Predicates can be used to describe the objects of the environment and their relations.
+\end{Tdef}
+
+\begin{Tdef}[Ground Predicate]
+    A ground predicate is a predicate where all the terms are constants.
+\end{Tdef}
+    
+\begin{Tdef}[State]
+    A state $s$ is defined as a set of ground predicates: $s = \left\{ p_1, p_2, \dots, p_n\right\}$
+    while describing a state we adopt the \textit{closed world assumption}\footnote{The state description only includes predicates that evaluate to true}.
+\end{Tdef}
+    
+\begin{Tdef}[Action]
+    An Action $a$ is defined as follows: $a = \langle pre(a), eff(a) \rangle$, where:
+    \vspace{-0.5em}
+    \begin{compactitem}
+    \item 
+    $pre(a)$ is the precondition that has to hold to preform the action.
+    \item 
+    $eff(a)$ is the effect of the action on the state.
+    \end{compactitem}
+\end{Tdef}
+
+\begin{Tdef}[Applicable Action]
+    Given a state $s$ and an action $a$, we say that $a$ is applicable in $s$ 
+    if and only if:
+    \vspace{-0.5em}
+    $$\forall p_i \in pre(a): p_i\in s \text{ and } \forall \bar{p_i} \notin s$$
+    Applying action $a$ in state $s$ will result in a new state $\acute{s}$
+    in which some predicates are deleted 
+    (i.e. are given the boolean value false), while others are added.
+    The set of deleted and added predicates are denoted by $eff^-(a), eff^+(a)$ respectively.
+    We denote the application of an action $a$ to a state $s$ as:
+    \vspace{-0.5em}
+    $$\gamma(s,a) := (s \cup eff(a)^+) \setminus eff(a)^- = \acute{s}$$
+    For a sequence of actions $\mathbf{A} = \langle a_1,\dots,a_n \rangle$ we recursively define 
+    the application of $\mathbf{A}$ to $s$ as:
+    \vspace{-0.5em}
+    \begin{compactitem}
+    \item 
+    $\hat{\gamma}(s,\langle \rangle) := s$
+    \item 
+    $\hat{\gamma}(s,\langle a_1,\dots,a_n\rangle) := \hat{\gamma}(\gamma(s,a_1),\langle a_2,\dots,a_n\rangle)$
+    \end{compactitem}
+    given that $\gamma$ is well defined for each $a_i$.
+\end{Tdef}
+
+\filbreak
+
+\subsubsection{Planning domain}
+
+For an intelligent agent to be able to conduct a reasoning process, 
+it should have a model of the environment. 
+This model does not have to reflect each element of the environment, 
+but it should be a good and accurate approximation.
+\begin{Tdef}[Planning Domain]
+
+    A planning domain is a tuple $\Sigma= (\mathcal{P}, \mathcal{A})$ where:
+    \vspace{-0.5em}
+    \begin{compactitem}
+        \item 
+        $\mathcal{P}$ is a finite set of predicates.
+        \item 
+        $\mathcal{A}$ is a finite set of actions.
+        \item 
+        The finite set $\mathcal{S}$ which contains all possible states can be inferred from $\mathcal{P}$ and $\mathcal{A}$.
+    \end{compactitem}
+    \vspace{-0.5em}
+\end{Tdef}
+
+In practice, planning domain definition languages (PDDL) are used to describe the domain. There are many different versions and variations of PDDL each with certain set of capabilities and limitations. 
+Here is a simple example from \cite{IntroductionPlanningDomainhaslum2019}, where a description of a simple switch is provided with two actions:
+\vspace{0.5em}
+\lstset{
+  xleftmargin=2em,
+  frame=single,
+  framexleftmargin=1.5em, 
+  framextopmargin=1.5em,
+  framexbottommargin=1.5em,
+}
+\begin{lstlisting}[language=PDDL,caption=Domain definition example]
+(define (domain switch)
+    (:requirements :strips)
+    (:predicates
+        (switch_is_on)
+        (switch_is_off)
+    )
+    (:action switch_on
+        :precondition (switch_is_off)
+        :effect (and (switch_is_on)
+            (not (switch_is_off))))
+    (:action switch_off
+        :precondition (switch_is_on)
+        :effect (and (switch_is_off) (not (switch_is_on)))
+    )
+)
+\end{lstlisting}
+
+\subsubsection{Planning problem}
+A planning domain is not a description of the current state of the environment 
+but rather a model of all the possible states of the environment. 
+Yet, this is insufficient for the agent. The agent must be aware 
+of the current state of the environment and have a clear definition 
+of what to achieve.
+
+\begin{Tdef}[Planning Problem]
+    A planning problem is a triple $\pi = (\Sigma,s_I,s_G)$, where :
+    \vspace{-0.5em}
+    \begin{compactitem}
+        \item 
+        $\Sigma$ is a problem domain.
+        
+        \item 
+        $s_I$ is the initial state.
+        
+        \item 
+        $s_G$ is the goal state.
+    \end{compactitem}
+    \vspace{-0.5em}
+\end{Tdef}
+\vspace{-0.5em}
+Just like planning domains planning problems are described in practice using PDDL. 
+Here is a problem definition for the previously defined domain:
+\vspace{0.5em}
+\lstset{
+  xleftmargin=.2\textwidth, 
+  xrightmargin=.2\textwidth,
+  frame=single,
+  framexleftmargin=1.5em, 
+  framextopmargin=1.5em,
+  framexbottommargin=1.5em,
+}
+\begin{lstlisting}[language=PDDL, caption=Problem definition example]
+(define (problem turn_it_off)
+    (:domain switch)
+    (:init
+        (switch_is_on))
+    (:goal
+        (switch_is_off)
+    )
+)
+\end{lstlisting}
+
+\begin{Tdef}[Valid Plan]
+    Given a planning domain $\Sigma$ and a planning problem $\pi$,
+    a plan $\mathbf{P} = \langle a_1,a_2,\dots,a_n\rangle$ is a valid plan for $\pi$ if:
+    $$\hat{\gamma}(s_I,\mathbf{P}) = s_n \in s_G$$
+\end{Tdef}
+
+\subsubsection{Planners}
+
+A planner takes a planning problem and formulates a sequence of actions 
+to transform the current state of the environment into a state 
+that satisfies the objective. Different problem-solving 
+strategies are employed by various planners. 
+Some planners use theorem proving \cite{PlanningSatisfiabilitykautz1992} 
+to generate a plan, whereas others use state-space search. 
+Planning is computationally hard 
+\cite{ComplexityDecidabilityUndecidabilityerol1995}, and 
+sometimes it is not enough to find a plan that achieves the goal, 
+but the planner has to consider also a set of metrics that make plan 
+\textit{a} better/worse than plan \textit{b}. 
+This causes the planning process to be more and more complicated.
