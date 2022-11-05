@@ -114,25 +114,19 @@ but it should be a good and accurate approximation.
 \end{Tdef}
 
 In practice, planning domain definition languages (PDDL) are used to describe the domain \cite{aeronautiques1998pddl}. There are many different versions and variations of PDDL each with certain set of capabilities and limitations. 
-Listing ~\ref{lst:PDDLDomainDefinitonExample} shows a simple example from \cite{IntroductionPlanningDomainhaslum2019}, where a description of a simple switch is provided with two actions:
+Listing~\ref{lst:PDDLDomainDefinitonExample} shows a simple example from \cite{IntroductionPlanningDomainhaslum2019}, where a description of a simple switch is provided with two actions:
 
 \begin{Listing}
     \begin{lstlisting}[language=PDDL]
     (define (domain switch)
         (:requirements :strips)
-        (:predicates
-            (switch_is_on)
-            (switch_is_off)
-        )
+        (:predicates (switch_is_on)(switch_is_off))
         (:action switch_on
             :precondition (switch_is_off)
-            :effect (and (switch_is_on)
-                (not (switch_is_off))))
+            :effect (and (switch_is_on) (not (switch_is_off))))
         (:action switch_off
             :precondition (switch_is_on)
-            :effect (and (switch_is_off) (not (switch_is_on)))
-        )
-    )
+            :effect (and (switch_is_off) (not (switch_is_on)))))
   \end{lstlisting}
     \caption{PDDL domain definition example.}
     \label{lst:PDDLDomainDefinitonExample}
@@ -162,21 +156,19 @@ of what to achieve.
 \end{Tdef}
 \vspace{-0.5em}
 Just like planning domains planning problems are described in practice using PDDL. 
-Here is a problem definition for the previously defined domain:
+Listing~\ref{lst:PDDLProblemDefinitonExample} shows a problem definition for the previously defined domain:
 \begin{Listing}
-    \begin{lstlisting}
+    \begin{lstlisting}[language=PDDL]
     (define (problem turn_it_off)
         (:domain switch)
-        (:init
-            (switch_is_on))
-        (:goal
-            (switch_is_off)
-        )
-    )
+        (:init (switch_is_on))
+        (:goal(switch_is_off)))
   \end{lstlisting}
     \caption{PDDL problem definition example}
     \label{lst:PDDLProblemDefinitonExample}
 \end{Listing}
+
+Appendix~\ref{appendix:blocksWorldDomain} contains a more complex example of a planning domain and problem.
 
 \begin{Tdef}[Valid Plan]
     Given a planning domain $\Sigma$ and a planning problem $\pi$,
