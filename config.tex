@@ -876,7 +876,7 @@
 %
 % \floatstyle{ruled} % TODO: enabled or disabled causes no change - listings and algorithms are always ruled
 %
-\newfloat{Listing}{tbp}{code}[chapter]
+\newfloat{Listing}{H}{code}[chapter]
 \crefname{Listing}{Listing}{Listings}
 
 \newfloat{Algorithmus}{tbp}{alg}[chapter]
@@ -1211,6 +1211,8 @@
 \theoremstyle{break}
 \theorembodyfont{\upshape}
 \newtheorem{Tdef}{Definition}[section]
+\floatstyle{plain}
+\newfloat{TextDefinition}{H}
 
 % This file is part of https://github.com/Maumagnaguagno/Planning_LaTeX
 \lstdefinelanguage{PDDL}

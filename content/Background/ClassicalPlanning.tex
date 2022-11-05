@@ -22,8 +22,7 @@ imposing a number of restrictive assumptions:
 
 We can now introduce the formal definition of classical planning. 
 The formal structures we use are heavily influenced by formal definitions 
-described in \cite{AutomatedPlanningTheoryghallab2006}\cite{OverviewHierarchicalTaskgeorgievski2014}\cite{alnazer2019htn}. 
-Before doing that we need to define some elementary structures first:
+described in \cite{AutomatedPlanningTheoryghallab2006}\cite{OverviewHierarchicalTaskgeorgievski2014}\cite{alnazer2019htn}:
 
 
 \begin{Tdef}[Predicate]
@@ -91,7 +90,7 @@ Before doing that we need to define some elementary structures first:
     given that $\gamma$ is well defined for each $a_i$.
 \end{Tdef}
 
-\filbreak
+
 
 \subsubsection{Planning domain}
 
@@ -114,33 +113,30 @@ but it should be a good and accurate approximation.
     \vspace{-0.5em}
 \end{Tdef}
 
-In practice, planning domain definition languages (PDDL) are used to describe the domain. There are many different versions and variations of PDDL each with certain set of capabilities and limitations. 
-Here is a simple example from \cite{IntroductionPlanningDomainhaslum2019}, where a description of a simple switch is provided with two actions:
-\vspace{0.5em}
-\lstset{
-  xleftmargin=2em,
-  frame=single,
-  framexleftmargin=1.5em, 
-  framextopmargin=1.5em,
-  framexbottommargin=1.5em,
-}
-\begin{lstlisting}[language=PDDL,caption=Domain definition example]
-(define (domain switch)
-    (:requirements :strips)
-    (:predicates
-        (switch_is_on)
-        (switch_is_off)
+In practice, planning domain definition languages (PDDL) are used to describe the domain \cite{aeronautiques1998pddl}. There are many different versions and variations of PDDL each with certain set of capabilities and limitations. 
+Listing ~\ref{lst:PDDLDomainDefinitonExample} shows a simple example from \cite{IntroductionPlanningDomainhaslum2019}, where a description of a simple switch is provided with two actions:
+
+\begin{Listing}
+    \begin{lstlisting}[language=PDDL]
+    (define (domain switch)
+        (:requirements :strips)
+        (:predicates
+            (switch_is_on)
+            (switch_is_off)
+        )
+        (:action switch_on
+            :precondition (switch_is_off)
+            :effect (and (switch_is_on)
+                (not (switch_is_off))))
+        (:action switch_off
+            :precondition (switch_is_on)
+            :effect (and (switch_is_off) (not (switch_is_on)))
+        )
     )
-    (:action switch_on
-        :precondition (switch_is_off)
-        :effect (and (switch_is_on)
-            (not (switch_is_off))))
-    (:action switch_off
-        :precondition (switch_is_on)
-        :effect (and (switch_is_off) (not (switch_is_on)))
-    )
-)
-\end{lstlisting}
+  \end{lstlisting}
+    \caption{PDDL domain definition example.}
+    \label{lst:PDDLDomainDefinitonExample}
+\end{Listing}
 
 \subsubsection{Planning problem}
 A planning domain is not a description of the current state of the environment 
@@ -167,25 +163,20 @@ of what to achieve.
 \vspace{-0.5em}
 Just like planning domains planning problems are described in practice using PDDL. 
 Here is a problem definition for the previously defined domain:
-\vspace{0.5em}
-\lstset{
-  xleftmargin=.2\textwidth, 
-  xrightmargin=.2\textwidth,
-  frame=single,
-  framexleftmargin=1.5em, 
-  framextopmargin=1.5em,
-  framexbottommargin=1.5em,
-}
-\begin{lstlisting}[language=PDDL, caption=Problem definition example]
-(define (problem turn_it_off)
-    (:domain switch)
-    (:init
-        (switch_is_on))
-    (:goal
-        (switch_is_off)
+\begin{Listing}
+    \begin{lstlisting}
+    (define (problem turn_it_off)
+        (:domain switch)
+        (:init
+            (switch_is_on))
+        (:goal
+            (switch_is_off)
+        )
     )
-)
-\end{lstlisting}
+  \end{lstlisting}
+    \caption{PDDL problem definition example}
+    \label{lst:PDDLProblemDefinitonExample}
+\end{Listing}
 
 \begin{Tdef}[Valid Plan]
     Given a planning domain $\Sigma$ and a planning problem $\pi$,

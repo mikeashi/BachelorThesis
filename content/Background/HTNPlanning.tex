@@ -8,8 +8,7 @@ Hierarchical task network (HTN) planning tries to overcome some of those short c
 The abstraction that HTN introduces is implemented using two types of constructs \cite{PANDAFrameworkHierarchicalholler2021}: primitive and compound tasks. These constructs are combined to form partially ordered sets called task networks. The primitive tasks are comparable to actions in classical planning; they can be executed if the current state of the environment adheres to some condition and they have some effect on the environment. The compound tasks represent more complex actions that cannot be executed in one step and have to be decomposed using some decomposition method. The decomposition methods are part of the planning domain, and each method can decompose a specific compound task into a task network. One compound task can be decomposed by multiple methods; in contrast, there is a one-to-one mapping between operators and primitive tasks.
 
 \subsection{Formal Definitions}
-
-The following formal structures are adopted from \cite{OverviewHierarchicalTaskgeorgievski2014} \cite{alnazer2019htn}.
+Throughout the years, numerous attempts have been made to establish a standard formalismus for HTN planning \cite{bercher_survey_2019}. Some of these approaches were actually unique, while others were essentially comparable. The purpose of this section is not to provide a comprehensive formal framework, but rather to provide a formal background that will assist the reader in comprehending HTN's underlying structure. The following formal structures are derived from \cite{OverviewHierarchicalTaskgeorgievski2014} \cite{alnazer2019htn}.
 
 \begin{Tdef}[Primitive task]
     A primitive task  $t_p \in T_p$ is a pair $t_p = <symbol(t_p),terms(t_p)>$, where:
@@ -35,10 +34,25 @@ The following formal structures are adopted from \cite{OverviewHierarchicalTaskg
     \item 
     $pre(o)$ and $eff(o)$ are precondition and effect.
     \end{compactitem}
+    It is important to keep in mind that each primitive task must have one and only one operator, but a single operator can be utilized by multiple primitive tasks.
+    An operator is quite comparable to an action from classical planning, thus we say an operator $o$ is applicable in a state $s$ if and only if:
+    \vspace{-0.5em}
+    $$\forall p_i \in pre(o): p_i\in s \text{ and } \forall \bar{p_i} \notin s$$
 \end{Tdef}
 
 \begin{Tdef}[Compound task]
-    A compound task $t_c \in T_c$ is defined in a similar way to the primitive task.
+    A compound task $t_c \in T_c$ is a pair $t_c = <symbol(t_c),terms(t_c)>$, where:
+    \vspace{-0.5em}
+    \begin{compactitem}
+    \item 
+    $T_c$ is a finite set of compound tasks.
+    \item 
+    $symbol(t_c)$ is a compound task symbol.
+    \item 
+    $terms(t_c)$  is a set of terms, such that $terms(t_c) = \langle \tau_1, \tau_2, \dots, \tau_n \rangle$.
+    \end{compactitem}
+
+    In practice, it is often beneficial to extend this definition to include a set of preconditions $pre(t_c)$ that must hold in the current world state for the planner to even consider this compound task for decomposition.
 \end{Tdef}
 
 \begin{Tdef}[Task network]
@@ -53,7 +67,7 @@ The following formal structures are adopted from \cite{OverviewHierarchicalTaskg
 \end{Tdef}
 
 \begin{Tdef}[Method]
-    A method $m \in M$ is a pair $m = <c(m), tn(m)>$, where:
+    A method $m \in M$ is a triple $m = <c(m), pre(m), tn(m)>$, where:
     \vspace{-0.5em}
     \begin{compactitem}
     \item 
@@ -61,9 +75,26 @@ The following formal structures are adopted from \cite{OverviewHierarchicalTaskg
     \item 
     $c(m)$ is a compound task.
     \item 
+    $pre(m)$ is a precondition.
+    \item 
     $tn(m)$ is a task network.
     \end{compactitem}
+    A method $m$ is applicable in a state $s$ if and only if:
+    \vspace{-0.5em}
+    $$\forall p_i \in pre(m): p_i\in s \text{ and } \forall \bar{p_i} \notin s$$
 \end{Tdef}
+
+\begin{Tdef}[Decomposition]
+   Given a task network $tn=<T, \prec>$, and an applicable method $m$ for a compound task $t= c(m)$, we say that $m$ decomposes $tn$ into $\acute{tn}$ with:
+   \vspace{-0.5em}
+    \begin{compactitem}
+    \item 
+    $\acute{tn} = ((T \setminus\{ t \}) \cup T_m, \prec \cup \prec_m \cup \prec_D) $ where 
+    \item 
+    $\prec_D = \{ (t_1, t_2) \in T \times T_m | (t_1, t) \in  \prec\} \cup \{ (t_1, t_2) \in T_m \times T | (t, t_2) \in  \prec\}$ 
+    \end{compactitem}
+\end{Tdef}
+
 
 \begin{Tdef}[HTN planning domain]
     A  HTN planning domain is a pair $\Sigma= (O, M)$ where:
@@ -90,5 +121,4 @@ The following formal structures are adopted from \cite{OverviewHierarchicalTaskg
 \end{Tdef}
 
 \subsubsection{Planners}
-
-There are two main types of HTN planners: state-based and plan-based. We are only interested in the first type, where the planner searches for a state that can be reached from the initial task network. That is done by decomposing compound tasks and executing primitive tasks when applicable. Decomposing a compound task will change the structure of the task network, but it will not affect the state; in contrast, executing a primitive task will transform the state of the environment.
+HTN planners are fundamentally different from classical planners in that HTN planners do not pursue some goal state, but rather try to simplify a hierarchical network of tasks into a linear sequence of \qq{actions}. There are two main types of HTN planners: state-based and plan-based. We are only interested in the first type, where the planner searches for a state that can be reached from the initial task network. That is done by decomposing compound tasks and executing primitive tasks when applicable. Decomposing a compound task will change the structure of the task network, but it will not affect the state; in contrast, executing a primitive task will transform the state of the environment.
