@@ -1234,3 +1234,52 @@
     :durative-action,:duration,:condition
   }
 }
+% This file is part of https://github.com/Maumagnaguagno/Planning_LaTeX
+\lstdefinelanguage{HDDL}
+{
+  sensitive=false,    % not case-sensitive
+  morecomment=[l]{;}, % line comment
+  alsoletter={:,-},   % consider extra characters
+  morekeywords={
+    define,domain,problem,not,and,or,forall,exists,
+    :domain,:requirements,:typing,:hierarchy,:equality,:negative-preconditions,
+    :method-preconditions,:universal-preconditions,:universal-effects,:existential-preconditions,
+    :types,:predicates,:action,:parameters,:precondition,:effect,
+    :task,:method,:subtasks,:tasks,:ordered-subtasks,:ordered-tasks,:ordering,:constraints,
+    :htn,:init,:goal,:objects
+  }
+}
+
+% This file is part of https://github.com/Maumagnaguagno/Planning_LaTeX
+\lstdefinelanguage{JSHOP}
+{
+  sensitive=false,    % not case-sensitive
+  morecomment=[l]{;}, % line comment
+  alsoletter={:,-},   % consider extra characters
+  morekeywords={
+    defdomain,defproblem,not,and,or,imply,forall,assign,call,nil,
+    :first,:sort-by,:immediate,:unordered,:operator,:method,:protection,:-
+  }
+}
+
+\lstdefinelanguage{CHIMP}
+{
+  sensitive=false,    % not case-sensitive
+  morecomment=[l]{;}, % line comment
+  alsoletter={:,-},   % consider extra characters
+  morekeywords={
+    :operator,Head, Pre, Del, Add
+  }
+}
+
+\lstdefinelanguage{TF}
+{
+  sensitive=false,    % not case-sensitive
+  morecomment=[l]{;}, % line comment
+  alsoletter={:,-},   % consider extra characters
+  morekeywords={
+    actschema, pattern, conditions, holds, effects, end
+  }
+}
+
+\newlength{\listingFrameWidth}

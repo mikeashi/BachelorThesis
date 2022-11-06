@@ -122,3 +122,29 @@ Throughout the years, numerous attempts have been made to establish a standard f
 
 \subsubsection{Planners}
 There are numerous strategies implemented by different HTN planners to solve an HTN planning problem. HTN planners can be classified based on the search space in which the planner operate. This work is not intended to provide a full overview of HTN planners, as has been done in \cite{bercher_survey_2019} and \cite{OverviewHierarchicalTaskgeorgievski2014}. Therefore, we will only be providing an oversimplified overview of how HTN planners function. HTN planners are fundamentally different from classical planners in that they do not pursue some goal state but rather try to simplify a hierarchical network of tasks into a linear sequence of \qq{actions}. Some HTN planners perform decomposition-based search, in which the task network is repeatedly decomposed by applicable methods until there are no more compound tasks left. The result would be a task network that consists of only primitive tasks. Others perform progression-based search, where the planner decomposes compound tasks and executes primitive tasks when applicable until the task network is empty. It's important to know that decomposing a compound task changes the structure of the task network but not the state. On the other hand, executing a primitive task changes the state of the environment but not the structure of the task network. When performing a progression-based search, the planner must keep track of the executed primitive tasks; otherwise, it is necessary to retrace the path the planner took from the initial task network to the empty one.
+
+\subsubsection{Description Languages}
+Using a description language, HTN planning domains and problems can be described just as they are in classical planning. Prolog\footnote{\url{https://en.wikipedia.org/wiki/Prolog}} is commonly used, especially in academic research. PDDL has also been extended to support HTN constructs, and recently a new description language based on PDDL called HDDL (Hierarchical Domain Definition Language) has been adopted to be the standard input language for the track on hierarchical planning at the IPC 2020 (International Planning Competition). Planners are typically reluctant to adopt new formats, and currently the majority of planners only support a custom input format. HPDL and TF are two older formats that might be encountered, however they are no longer widely utilized. 
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{graphics/formats.png}
+    \caption{The stack task from the block-world domain in different formats.}
+    \label{fig:formats}
+\end{figure}
+
+There are also planners that use a programming language to describe the domain and problem rather than a specialized description language. This approach has the advantage that the planner can be directly integrated into the system using it without the need for a translation layer between the system and the planner. RAE\footnote{\url{https://github.com/patras91/rae_release}}, GTPyhop\footnote{\url{https://github.com/dananau/GTPyhop}} and FluidHTN\footnote{\url{https://github.com/ptrefall/fluid-hierarchical-task-network}} are all great examples of this approach.
+
+\begin{Listing}
+    \begin{lstlisting}[language=Python]
+        def stack(s,b1,b2):
+            if s.pos[b1] == 'hand' and s.clear[b2] == True:
+                s.pos[b1] = b2
+                s.clear[b1] = True
+                s.holding['hand'] = False
+                s.clear[b2] = False
+                return s
+    \end{lstlisting}
+    \caption{The stack task from the block-world domain in GTPyhop.}
+    \label{lst:StackPython}
+\end{Listing}
