@@ -4,25 +4,25 @@
 Classical HTN planners have several advantages over classical planners, but they lack any concept of utility. Classical HTN planners are satisfied when a solution is found, but in the real world, this is rarely sufficient. In the real world, we are typically interested in finding an optimal solution in some sense. For instance, we may only be interested in solutions that are safe, fast, or inexpensive. In this section, we will provide an overview of the notion of utility and how it can be utilized to guide the planning process.
 
 \subsection{Utility}
-The core concept of utility revolves around modeling the outcomes of an action or situation based on a set of criteria or metrics, which allows us to rank actions or outcomes and choose the most preferable option. Mathematically, utility can be represented via a set of binary relations over a set of actions or situations $\mathbf{\Sigma}$ \cite{fishburn1968utility}.
+The core concept of utility revolves around modeling the outcomes of an action or situation based on a set of criteria or metrics, which allows us to rank actions or outcomes and choose the most preferable option. Mathematically, utility can be represented via a set of binary relations over a set of actions or situations $\mathbf{\Delta}$ \cite{fishburn1968utility}.
 
 \begin{Tdef}[Preference-indifference relation $\preceq$]
-    The preference-indifference relation $\preceq$ is a binary relation over a set of actions/situations $\mathbf{\Sigma}$ that satisfies the following:
-    $$\forall \sigma_1, \sigma_2 \in \Sigma : \sigma_1 \preceq \sigma_2 \vee \sigma_1 \npreceq \sigma_2$$
-    $\sigma_1 \preceq \sigma_2$ means that $\sigma_1$ is not preferred to $\sigma_2$.
+    The preference-indifference relation $\preceq$ is a binary relation over a set of actions/situations $\mathbf{\Delta}$ that satisfies the following:
+    $$\forall \delta_1, \delta_2 \in \Delta : \delta_1 \preceq \delta_2 \vee \delta_1 \npreceq \delta_2$$
+    $\delta_1 \preceq \delta_2$ means that $\delta_1$ is not preferred to $\delta_2$.
 \end{Tdef}
 
 \begin{Tdef}[Strict preference relation $\prec$]
-    The strict preference relation $\prec$ is a binary relation over a set of actions/situations $\mathbf{\Sigma}$ that satisfies the following:
-    $$\forall \sigma_1, \sigma_2 \in \Sigma : \sigma_1 \prec \sigma_2 \Longleftrightarrow \sigma_1 \preceq \sigma_2 \wedge \sigma_2 \npreceq \sigma_1$$
-    $\sigma_1 \prec \sigma_2$ means that $\sigma_2$ is preferred to $\sigma_1$.
+    The strict preference relation $\prec$ is a binary relation over a set of actions/situations $\mathbf{\Delta}$ that satisfies the following:
+    $$\forall \delta_1, \delta_2 \in \Delta : \delta_1 \prec \delta_2 \Longleftrightarrow \delta_1 \preceq \delta_2 \wedge \delta_2 \npreceq \delta_1$$
+    $\delta_1 \prec \delta_2$ means that $\delta_2$ is preferred to $\delta_1$.
 \end{Tdef}
 
 
 \begin{Tdef}[Indifference relation $\sim$]
-    The indifference relation $\sim$ is a binary relation over a set of actions/situations $\mathbf{\Sigma}$ that satisfies the following:
-    $$\forall \sigma_1, \sigma_2 \in \Sigma : \sigma_1 \sim \sigma_2 \Longleftrightarrow \sigma_1 \preceq \sigma_2 \wedge \sigma_2 \preceq \sigma_1$$
-    $\sigma_1 \sim \sigma_2$ means that $\sigma_1$ is indifferent to $\sigma_2$.
+    The indifference relation $\sim$ is a binary relation over a set of actions/situations $\mathbf{\Delta}$ that satisfies the following:
+    $$\forall \delta_1, \delta_2 \in \Delta : \delta_1 \sim \delta_2 \Longleftrightarrow \delta_1 \preceq \delta_2 \wedge \delta_2 \preceq \delta_1$$
+    $\delta_1 \sim \delta_2$ means that $\delta_1$ is indifferent to $\delta_2$.
 \end{Tdef}
 
 The previous binary relations form an invaluable framework that enables us to rank solutions given that we have a model that can map any action/situation to a numeric value (utility). It is essential to recognize that utility and value do not constitute the same concept. For example, in the context of commuting to work, one can use the train or a taxi. The train would cost two dollars, whereas the taxi would cost twenty. These values do not take into consideration factors such as comfort, speed, or emissions. Concrete values such as cost and time are objective, whereas utility is quite subjective. An agent with an emphasis on comfort would give the train a lower utility score, while an agent with an emphasis on reducing emissions would give the train a higher utility score.
@@ -75,27 +75,58 @@ We will refrain from providing a concrete algorithm for integrating utility into
 
 \subsection{Expected utility}
 Basic utility is an effective tool for comparing solutions and ensuring that the agent always chooses the solution with the most preferable outcome. However, basic utility assumes that the world is deterministic and each action has only one outcome, which has a significant impact on its applicability in the real world, where uncertainty is a fundamental challenge.
-To illustrate the limitations of basic utility, consider the following scenario shown in Figure~\ref{fig:expected_utility} in which an agent is offered the choice between two actions, $\sigma_1$ and $\sigma_2$. There are two possible outcomes for action $\sigma_1$: the agent will receive three dollars 40\% of the time, and nothing the remaining 60\% of the time. Action $\sigma_2$ also has also two possible outcomes: 10\% of the time, the agent will receive seven dollars, and 90\% of the time, it will receive nothing.
+To illustrate the limitations of basic utility, consider the following scenario shown in Figure~\ref{fig:expected_utility} in which an agent is offered the choice between two actions, $\delta_1$ and $\delta_2$. There are two possible outcomes for action $\delta_1$: the agent will receive three dollars 40\% of the time, and nothing the remaining 60\% of the time. Action $\delta_2$ also has also two possible outcomes: 10\% of the time, the agent will receive seven dollars, and 90\% of the time, it will receive nothing.
 
 \begin{figure}[H]
     \centering
     \begin{tikzpicture}
         \node {} [sibling distance = 2.5cm]
             child{
-                node{$\sigma_1$}[sibling distance = 1.5cm]
+                node{$\delta_1$}[sibling distance = 1.5cm]
                 child{node{3} edge from parent node [left] {0.4}}
                 child{node{0} edge from parent node [right] {0.6}}
             }
             child{
-                node{$\sigma_2$}[sibling distance = 1.5cm]
+                node{$\delta_2$}[sibling distance = 1.5cm]
                 child{node{7} edge from parent node [left] {0.1}}
                 child{node{0} edge from parent node [right] {0.9}}
             };
         \end{tikzpicture}
-        \caption{A simple example of expected utility.}
+        \caption{A simple example of hypothetical game.}
         \label{fig:expected_utility}
 \end{figure}
 
-If the agent is acting solely on the basis of basic utility, it will always choose action $\sigma_2$, since its utility value is greater, whereas a rational agent will virtually always choose action $\sigma_1$ because it has a greater expected utility:
-$$ E(\sigma_2) = 0.1 \times 7 + 0.9 \times 0  \prec E(\sigma_1) = 0.4 \times 3 + 0.6 \times 0 $$
+If the agent is acting solely on the basis of basic utility, it will always choose action $\delta_2$, since its utility value is greater, whereas a rational agent will virtually always choose action $\delta_1$ because it has a greater expected value:
+$$ \mathbbm{E}(\delta_2) = 0.1 \times 7 + 0.9 \times 0  < \mathbbm{E}(\delta_1) = 0.4 \times 3 + 0.6 \times 0 $$
 
+In the previous example, we assumed that the agent based its decision on the expected value, which can lead us to the wrong conclusion that expected value can be used to represent expected utility. However, it was clear from the early stages of research that rational agents do not always act on the basis of expected value. As previously discussed, value is an objective concept, whereas utility is far more subjective and can be influenced by an agent's preferences, needs, and risk tolerance. Expected value fails to capture the subjective nature of utility, and thus it is not a suitable tool for representing expected utility. To further illustrate this point, we need to introduce the \textbf{St. Petersburg paradox}\footnote{\url{https://en.wikipedia.org/wiki/St._Petersburg_paradox}}, which demonstrates how an agent whose only criteria for decision-making is expected value would propose a course of action that no rational agent would ever consider:
+
+\begin{quotation}
+    A hypothetical casino in St. Petersburg offers the following game to a single player:
+    After paying a fixed entrance fee, a fair coin is tossed until the first head appears, which ends the game. When the game ends, the player wins $2^n$, where $n$ is the round where the first head appeared.
+\end{quotation}
+
+Now the question is \textit{how much would a rational agent be willing to pay as an entrance fee to play this game?}
+
+An agent using the expected value would be willing to pay an entrance fee up to the game's expected value which is infinite:
+$$  \mathbbm{E} = \frac{1}{2} \cdot 2 + \frac{1}{4} \cdot 4 + \frac{1}{8} \cdot 8 + \frac{1}{16} \cdot 16 + \dots = \infty$$
+
+which contradicts the fact that no rational agent would be willing to pay an arbitrary large entrance fee to play this game. A better approach would be to define a utility function $\mathfrak{u}$ that reflects the agent's preferences. We can use $\mathfrak{u}$ to define the expected utility of an action $\delta$ over the probability distribution $\mathbbm{P}$ of all its possible outcomes $\Omega$.
+
+\begin{Tdef}[Expected Utility]
+    The expected utility of an action $\delta$ is the weighted sum of all possible outcomes of $\delta$:
+    $$\mathbbm{E}(\delta) = \sum_{\omega} \mathbbm{P}(\omega) \cdot \mathfrak{u}(\omega)$$
+\end{Tdef}
+
+Using expected utility, we can extend our prefrence relations:
+\vspace{-0.5em}
+\begin{subequations}
+    \begin{align*}
+    \forall \delta_1, \delta_2 \in \Delta: \quad& \\
+    & \delta_1 \preceq \delta_2 \Longleftrightarrow \mathbbm{E}(\delta_1) \leq \mathbbm{E}(\delta_2) \\
+    & \delta_1 \prec \delta_2 \Longleftrightarrow \mathbbm{E}(\delta_1) < \mathbbm{E}(\delta_2) \\
+    & \delta_1 \sim \delta_2 \Longleftrightarrow \mathbbm{E}(\delta_1) = \mathbbm{E}(\delta_2) \\
+    \end{align*}
+\end{subequations}
+
+\subsection{Risk}
