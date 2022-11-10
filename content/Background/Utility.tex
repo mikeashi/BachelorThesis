@@ -361,3 +361,34 @@ Typically, the preferences and risk tolerance of an agent will be dynamic, chang
 \end{figure}
 
 At the end of this section, we would like to point out that although it has been shown \cite{kahneman2013prospect} that the expected utility theory fails as a descriptive theory due to its inability to successfully predict human behavior in some situations, it is a very suitable normative theory that can be used to guide the decision-making process of rational agents, especially when combined with a good dynamic utility function.
+
+\subsection{Risk attitude and HTN planning}
+Our model of utility-based HTN planning can be easily extended to enable agents to make decisions based on their risk attitude, by having a utility function that takes into account the risk involved in the decision. One benefit that we have is that we are not bound to one mathematical construct; we can have multiple utility functions corresponding to different risk attitudes, and we can switch between them, choosing the function that better suits the agent's current situation. This allows our agents to have a more flexible and dynamic attitude toward risk. We can also utilize the rule-based nature of HTN to create a set of rules that can override the current risk attitude of an agent in some situations where we believe the agent would be better off with a more or less risk-sensitive attitude. Let us consider the following scenario where we have a stock-trading agent: The agent has a hand-crafted utility function with an overall risk-averse attitude that is based on a plethora of financial and economic factors. However, it would be beneficial for the agent to have a set of rules in place that can override its risk tolerance in real time to react to sudden changes in the market. Such rules should not only be used to change the agent's attitude toward risk; they can also be used to directly interfere and change the evaluation of a given action to be more or less risky. Going back to our previous example, shorting a stock\footnote{\url{https://en.wikipedia.org/wiki/Short_(finance)}} is usually a big risk that should be avoided. However, if Warren Buffet\footnote{\url{https://en.wikipedia.org/wiki/Warren_Buffett}} is shorting stock X with a large sum of money, the action of shorting that stock should no longer be seen as risky.
+
+Lastly, we would like to note that it is beneficial to utilize the concept of risk attitude in HTN agents even when the concept of utility is not modeled, since it enables us to group actions and guide the decision-making process using one dynamic switch.
+
+\begin{Listing}
+    \begin{lstlisting}[language=HDDL]
+        (define (domain Little_Red_Riding_Hood)
+            ...
+            (:task get-to :parameters (?l - location ?a - riskAttitude))
+            ...
+            (:method stay-on-path
+                :parameters (?l - location ?a - riskAttitude)
+                :task (get-to ?l)
+                :precondition(isRiskAverse ?a)
+                ...
+            )
+            (:method wander-into-the-woods
+                :parameters (?l - location ?a - riskAttitude)
+                :task (get-to ?l ?a - riskAttitude)
+                :precondition(isRiskSeeking ?a)
+                ...
+            )
+        )
+    \end{lstlisting}
+    \caption{Example of using risk attitude without utility}
+    \label{lst:risk-without-utility}
+\end{Listing}
+
+Listing \ref{lst:risk-without-utility} shows how we can use risk attitude without utility. In this example, we have one compound task \textbf{get-to}, that can be achieved using one of two methods \textbf{stay-on-path} or \textbf{wander-into-the-woods}. The agent will choose between these methods based on its risk attitude. Integrating risk based decision-making in this way is quite simple and it can greatly impact the behavior of an agent in a dynamic environment.

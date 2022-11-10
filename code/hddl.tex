@@ -1,0 +1,20 @@
+\begin{lstlisting}[
+    basicstyle={\small\ttfamily},
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3,
+  language=HDDL
+]
+(:action stack
+  :parameters  (?a ?b)
+  :task (stack ?a ?b)
+  :precondition (
+                  and(clear ?b)
+                  (holding ?a))
+  :effect (and (arm-empty)
+               (clear ?a) (on ?a ?b)
+               (not (clear ?b))
+               (not (holding ?a))))
+\end{lstlisting}
