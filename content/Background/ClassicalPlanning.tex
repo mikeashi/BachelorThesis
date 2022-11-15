@@ -8,12 +8,12 @@ imposing a number of restrictive assumptions:
 
 \begin{itemize}
     \item 
-    \textbf{Finite, observable and static:}
-    The environment has only a finite number of states and actions. The current state of the environment is known to the agent and it can not be changed without an action initiated by the agent.
+    \textbf{Finite, observable, and static:}
+    The environment has only a finite number of states and actions. The current state of the environment is known to the agent, and it can not be changed without an action initiated by the agent.
 
     \item 
     \textbf{Deterministic, no uncertainty:}
-    The agent can predict with certainty the changes of the current state if a given action is preformed.
+    The agent can predict with certainty the changes in the current state if a given action is performed.
 
     \item 
     \textbf{Implicit time:}
@@ -52,7 +52,7 @@ described in \cite{AutomatedPlanningTheoryghallab2006}\cite{OverviewHierarchical
     
 \begin{Tdef}[State]
     A state $s$ is defined as a set of ground predicates: $s = \left\{ p_1, p_2, \dots, p_n\right\}$
-    while describing a state we adopt the \textit{closed world assumption}\footnote{The state description only includes predicates that evaluate to true}.
+    while describing a state, we adopt the \textit{closed world assumption}\footnote{The state description only includes predicates that evaluate to true}.
 \end{Tdef}
     
 \begin{Tdef}[Action]
@@ -60,7 +60,7 @@ described in \cite{AutomatedPlanningTheoryghallab2006}\cite{OverviewHierarchical
     \vspace{-0.5em}
     \begin{compactitem}
     \item 
-    $pre(a)$ is the precondition that has to hold to preform the action.
+    $pre(a)$ is the precondition that has to hold to perform the action.
     \item 
     $eff(a)$ is the effect of the action on the state.
     \end{compactitem}
@@ -73,13 +73,13 @@ described in \cite{AutomatedPlanningTheoryghallab2006}\cite{OverviewHierarchical
     $$\forall p_i \in pre(a): p_i\in s \text{ and } \forall \bar{p_i} \notin s$$
     Applying action $a$ in state $s$ will result in a new state $\acute{s}$
     in which some predicates are deleted 
-    (i.e. are given the boolean value false), while others are added.
-    The set of deleted and added predicates are denoted by $eff^-(a), eff^+(a)$ respectively.
+    (i.e., are given the boolean value false) while others are added.
+    The set of deleted and added predicates are denoted by $eff^-(a), eff^+(a)$, respectively.
     We denote the application of an action $a$ to a state $s$ as:
     \vspace{-0.5em}
     $$\gamma(s,a) := (s \cup eff(a)^+) \setminus eff(a)^- = \acute{s}$$
     For a sequence of actions $\mathbf{A} = \langle a_1,\dots,a_n \rangle$ we recursively define 
-    the application of $\mathbf{A}$ to $s$ as:
+    the application of $\mathbf{A}$ to $s$ as :
     \vspace{-0.5em}
     \begin{compactitem}
     \item 
@@ -108,12 +108,12 @@ but it should be a good and accurate approximation.
         \item 
         $\mathcal{A}$ is a finite set of actions.
         \item 
-        The finite set $\mathcal{S}$ which contains all possible states can be inferred from $\mathcal{P}$ and $\mathcal{A}$.
+        The finite set $\mathcal{S}$, which contains all possible states, can be inferred from $\mathcal{P}$ and $\mathcal{A}$.
     \end{compactitem}
     \vspace{-0.5em}
 \end{Tdef}
 
-In practice, planning domain definition languages (PDDL) are used to describe the domain \cite{aeronautiques1998pddl}. There are many different versions and variations of PDDL each with certain set of capabilities and limitations. 
+In practice, planning domain definition languages (PDDL) are used to describe the domain \cite{aeronautiques1998pddl}. There are many different versions and variations of PDDL, each with a certain set of capabilities and limitations. 
 Listing~\ref{lst:PDDLDomainDefinitonExample} shows a simple example from \cite{IntroductionPlanningDomainhaslum2019}, where a description of a simple switch is provided with two actions:
 
 \begin{Listing}
@@ -135,7 +135,7 @@ Listing~\ref{lst:PDDLDomainDefinitonExample} shows a simple example from \cite{I
 \subsubsection{Planning problem}
 A planning domain is not a description of the current state of the environment 
 but rather a model of all the possible states of the environment. 
-Yet, this is insufficient for the agent. The agent must be aware 
+Nevertheless, this is insufficient for the agent. The agent must be aware 
 of the current state of the environment and have a clear definition 
 of what to achieve.
 
@@ -155,7 +155,7 @@ of what to achieve.
     \vspace{-0.5em}
 \end{Tdef}
 \vspace{-0.5em}
-Just like planning domains planning problems are described in practice using PDDL. 
+Just like planning domains, planning problems are described in practice using PDDL. 
 Listing~\ref{lst:PDDLProblemDefinitonExample} shows a problem definition for the previously defined domain:
 \begin{Listing}
     \begin{lstlisting}[language=PDDL]
@@ -180,13 +180,11 @@ Appendix~\ref{appendix:blocksWorldDomain} contains a more complex example of a p
 
 A planner takes a planning problem and formulates a sequence of actions 
 to transform the current state of the environment into a state 
-that satisfies the objective. Different problem-solving 
-strategies are employed by various planners. 
-Some planners use theorem proving \cite{PlanningSatisfiabilitykautz1992} 
+that satisfies the objective. Various planners employ different problem-solving strategies. 
+For example, some planners use theorem proving \cite{PlanningSatisfiabilitykautz1992} 
 to generate a plan, whereas others use state-space search. 
 Planning is computationally hard 
 \cite{ComplexityDecidabilityUndecidabilityerol1995}, and 
 sometimes it is not enough to find a plan that achieves the goal, 
 but the planner has to consider also a set of metrics that make plan 
-\textit{a} better/worse than plan \textit{b}. 
-This causes the planning process to be more and more complicated.
+\textit{a} better/worse than plan \textit{b}, which causes the planning process to be more and more complicated.

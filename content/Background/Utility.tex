@@ -1,7 +1,7 @@
-\section{Utility and Risk Awearness}
+\section{Utility and Risk Awareness}
 \label{sec:utilityAnRisk}
 
-Classical HTN planners have several advantages over classical planners, but they lack any concept of utility. Classical HTN planners are satisfied when a solution is found, but in the real world, this is rarely sufficient. In the real world, we are typically interested in finding an optimal solution in some sense. For instance, we may only be interested in solutions that are safe, fast, or inexpensive. In this section, we will provide an overview of the notion of utility and how it can be utilized to guide the planning process.
+Classical HTN planners have several advantages over classical planners, but they lack any concept of utility. Classical HTN planners are satisfied when a solution is found, but in the real world, this is rarely sufficient. In the real world, we are typically interested in finding an optimal solution in some sense. For instance, we may only be interested in solutions that are safe, fast, or inexpensive. This section will provide an overview of the notion of utility and how it can be utilized to guide the planning process.
 
 \subsection{Utility}
 The core concept of utility revolves around modeling the outcomes of an action or situation based on a set of criteria or metrics, which allows us to rank actions or outcomes and choose the most preferable option. Mathematically, utility can be represented via a set of binary relations over a set of actions or situations $\mathbf{\Delta}$ \cite{fishburn1968utility}.
@@ -25,11 +25,11 @@ The core concept of utility revolves around modeling the outcomes of an action o
     $\delta_1 \sim \delta_2$ means that $\delta_1$ is indifferent to $\delta_2$.
 \end{Tdef}
 
-The previous binary relations form an invaluable framework that enables us to rank solutions given that we have a model that can map any action/situation to a numeric value (utility). It is essential to recognize that utility and value do not constitute the same concept. For example, in the context of commuting to work, one can use the train or a taxi. The train would cost two dollars, whereas the taxi would cost twenty. These values do not take into consideration factors such as comfort, speed, or emissions. Concrete values such as cost and time are objective, whereas utility is quite subjective. An agent with an emphasis on comfort would give the train a lower utility score, while an agent with an emphasis on reducing emissions would give the train a higher utility score.
+The previous binary relations form an invaluable framework that enables us to rank solutions, given that we have a model that can map any action/situation to a numeric value (utility). It is essential to recognize that utility and value do not constitute the same concept. For example, in the context of commuting to work, one can use the train or a taxi. The train would cost two dollars, whereas the taxi would cost twenty. These values do not take into consideration factors such as comfort, speed, or emissions. Concrete values such as cost and time are objective, whereas utility is quite subjective. An agent with an emphasis on comfort would give the train a lower utility score. In comparison, an agent with an emphasis on reducing emissions would give the train a higher utility score.
 
 
-\subsection{Utility based HTN planning}
-One way of utilizing utility to guide an HTN planner is to assign each operator a utility score, but this is insufficient. HTN structures are intrinsically hierarchical, and the utility of a task is not necessarily identical to the utility of its subtasks. A significantly better approach is to assign a utility score to each operator, method, and compound task. The utility of a task is then the sum of its own utility and the utility of its most preferred subtask. It is essential to bear in mind that utility is extremely dynamic, and thus the planner needs to be able to recalculate the utility of each task as the planning process progresses or whenever the state of the environment changes.
+\subsection{Utility-based HTN planning}
+One way of utilizing utility to guide an HTN planner is to assign each operator a utility score, but this is insufficient. HTN structures are intrinsically hierarchical, and the utility of a task is not necessarily identical to the utility of its subtasks. A significantly better approach is to assign a utility score to each operator, method, and compound task. The utility of a task is then the sum of its own utility and the utility of its most preferred subtask. In addition, it is essential to bear in mind that utility is extremely dynamic. Therefore, the planner must be able to recalculate the utility of each task as the planning process progresses or whenever the environment's state changes.
 
 \begin{figure}[H]
     \centering
@@ -69,13 +69,13 @@ One way of utilizing utility to guide an HTN planner is to assign each operator 
     \caption{A simple HTN task network for commuting to work.}
     \label{fig:commute_to_work}
 \end{figure}
-Figure ~\ref{fig:commute_to_work} shows a simple HTN task network for commuting to work. This example will help us to illustrate the necessity of having a utility score for each HTN construct. If we exclusively assign utility values to the operators, there will be no way to express whether an agent prefers or dislikes using the train for example. The compound task \qq{walk\_the\_remaining\_distance} can be reached via two distinct paths, and it would be illogical to assign it the same utility in both scenarios. The compound task \qq{commute\_to\_work} itself could have an inherently low utility value if the agent prefers to work from home.
+Figure ~\ref{fig:commute_to_work} shows a simple HTN task network for commuting to work. This example will help us to illustrate the necessity of having a utility score for each HTN construct. If we exclusively assign utility values to the operators, there will be no way to express whether an agent prefers or dislikes using the train, for example. The compound task \qq{walk\_the\_remaining\_distance} can be reached via two distinct paths, and it would be illogical to assign it the same utility in both scenarios. The compound task \qq{commute\_to\_work} itself could have an inherently low utility value if the agent prefers to work from home.
 
 We will refrain from providing a concrete algorithm for integrating utility into HTN planning since it is highly dependent on the search strategies implemented by the planner and because it has already been done in \cite{alnazer2019htn} \cite{georgievski2014utility} \cite{alnazer2022risk}. However, we will go over our own implementation in detail later on.
 
 \subsection{Expected utility}
-Basic utility is an effective tool for comparing solutions and ensuring that the agent always chooses the solution with the most preferable outcome. However, basic utility assumes that the world is deterministic and each action has only one outcome, which has a significant impact on its applicability in the real world, where uncertainty is a fundamental challenge.
-To illustrate the limitations of basic utility, consider the following scenario shown in Figure~\ref{fig:expected_utility} in which an agent is offered the choice between two actions, $\delta_1$ and $\delta_2$. There are two possible outcomes for action $\delta_1$: the agent will receive three dollars 40\% of the time, and nothing the remaining 60\% of the time. Action $\delta_2$ also has also two possible outcomes: 10\% of the time, the agent will receive seven dollars, and 90\% of the time, it will receive nothing.
+Basic utility is an effective tool for comparing solutions and ensuring that the agent always chooses the solution with the most preferable outcome. However, basic utility assumes that the world is deterministic and that each action has only one outcome, which significantly impacts its applicability in the real world, where uncertainty is a fundamental challenge.
+To illustrate the limitations of basic utility, consider the scenario shown in Figure~\ref{fig:expected_utility} in which an agent is offered the choice between two actions, $\delta_1$ and $\delta_2$. There are two possible outcomes for action $\delta_1$: the agent will receive three dollars 40\% of the time, and nothing the remaining 60\% of the time. Action $\delta_2$ also has two possible outcomes: 10\% of the time, the agent will receive seven dollars, and 90\% of the time, it will receive nothing.
 
 \begin{figure}[H]
     \centering
@@ -96,22 +96,22 @@ To illustrate the limitations of basic utility, consider the following scenario 
         \label{fig:expected_utility}
 \end{figure}
 
-If the agent is acting solely on the basis of basic utility, it will always choose action $\delta_2$, since its utility value is greater, whereas a rational agent will virtually always choose action $\delta_1$ because it has a greater expected value:
+If the agent is acting solely based on basic utility, it will always choose action $\delta_2$ since its utility value is greater, In contrast, a rational agent will virtually always choose action $\delta_1$ because it has a greater expected value:
 $$ \mathbbm{E}(\delta_2) = 0.1 \times 7 + 0.9 \times 0  < \mathbbm{E}(\delta_1) = 0.4 \times 3 + 0.6 \times 0 $$
 
-In the previous example, we assumed that the agent based its decision on the expected value, which can lead us to the wrong conclusion that expected value can be used to represent expected utility. However, it was clear from the early stages of research that rational agents do not always act on the basis of expected value. As previously discussed, value is an objective concept, whereas utility is far more subjective and can be influenced by an agent's preferences, needs, and risk tolerance. Expected value fails to capture the subjective nature of utility, and thus it is not a suitable tool for representing expected utility. To further illustrate this point, we need to introduce the \textbf{St. Petersburg paradox}\footnote{\url{https://en.wikipedia.org/wiki/St._Petersburg_paradox}}, which demonstrates how an agent whose only criteria for decision-making is expected value would propose a course of action that no rational agent would ever consider:
+In the previous example, we assumed that the agent had based its decision on the expected value, which can lead us to the wrong conclusion that the expected value can be used to represent expected utility. However, it was clear from the early stages of research that rational agents do not always act based on expected value. As previously discussed, value is an objective concept, whereas utility is far more subjective and can be influenced by an agent's preferences, needs, and risk tolerance. Expected value fails to capture the subjective nature of utility; thus, it is not a suitable tool for representing expected utility. To further illustrate this point, we need to introduce the \textit{St. Petersburg paradox}\footnote{\url{https://en.wikipedia.org/wiki/St._Petersburg_paradox}}, which demonstrates how an agent whose only criteria for decision-making is expected value would propose a course of action that no rational agent would ever consider:
 
 \begin{quotation}
     A hypothetical casino in St. Petersburg offers the following game to a single player:
     After paying a fixed entrance fee, a fair coin is tossed until the first head appears, which ends the game. When the game ends, the player wins $2^n$, where $n$ is the round where the first head appeared.
 \end{quotation}
 
-Now the question is \textit{how much would a rational agent be willing to pay as an entrance fee to play this game?}
+Now the question is, \textit{how much would a rational agent be willing to pay as an entrance fee to play this game?}
 
 An agent using the expected value would be willing to pay an entrance fee up to the game's expected value which is infinite:
 $$  \mathbbm{E} = \frac{1}{2} \cdot 2 + \frac{1}{4} \cdot 4 + \frac{1}{8} \cdot 8 + \frac{1}{16} \cdot 16 + \dots = \infty$$
 
-which contradicts the fact that no rational agent would be willing to pay an arbitrary large entrance fee to play this game. A better approach would be to define a utility function $\mathfrak{u}$ that reflects the agent's preferences. We can use $\mathfrak{u}$ to define the expected utility of an action $\delta$ over the probability distribution $\mathbbm{P}$ of all its possible outcomes $\Omega$.
+which contradicts the fact that no rational agent would be willing to pay an arbitrarily large entrance fee to play this game. A better approach would be to define a utility function $\mathfrak{u}$ that reflects the agent's preferences. We can use $\mathfrak{u}$ to define the expected utility of an action $\delta$ over the probability distribution $\mathbbm{P}$ of all its possible outcomes $\Omega$.
 
 \begin{Tdef}[Expected Utility]
     The expected utility of an action $\delta$ is the weighted sum of all possible outcomes of $\delta$:
@@ -132,7 +132,7 @@ Using expected utility, we can extend our prefrence relations:
 \subsection{Risk attitude}
 As mentioned earlier, the utility function is a highly subjective model of the world that reflects the agent's preferences, most notably its risk tolerance. In this section, we provide a short overview of the standard risk attitude models and how the risk attitude can guide the behavior of an agent.
 
-Sometimes rational agents are inclined to change behavior when the stacks are too high. For example, let us consider the following game, where a player has a 60\% chance of winning 100 dollars and a 40\% chance of losing 1 dollar. Some players would simply refuse to play the game because losing one dollar is too much of a risk. Some players would be willing to play the game, but they might also refuse to play if the stakes were higher. In other words, the risk attitude can be defined as the change in utility based on the ratio of potential wins to potential losses.
+Sometimes rational agents are inclined to change behavior when the stacks are too high. For example, let us consider the following game, where a player has a 60\% chance of winning 100 dollars and a 40\% chance of losing 1 dollar. Conversely, some players would simply refuse to play the game because losing one dollar is too much of a risk. Some players would be willing to play the game, but they might also refuse to play if the stakes were higher. In other words, the risk attitude can be defined as the change in utility based on the ratio of potential wins to potential losses.
 
 It is difficult to quantitatively model risk, and different fields have attempted to do so using different theories; since we cannot cover all of them here, we will explore the topic from the agent's viewpoint.
 
@@ -178,11 +178,11 @@ Maximizing gains or minimizing losses would be the primary goal of a naive agent
         
         \textit{Loss minimizing agent}
     \end{minipage}
-    \caption{Risk neutral agents' decision-making}
+    \caption{Risk-neutral agents' decision-making}
     \label{fig:risk-neutral}
 \end{figure}
 
-Figure \ref{fig:risk-neutral} shows two agents that are risk neutral. The first agent is gain-maximizing, and the second agent is loss-minimizing. The gain-maximizing agent will always choose $\delta_1$ because it has a higher potential gain of 100. Whereas the loss-minimizing agent will always choose $\delta_2$ because it has a lower potential loss, even though the probability of losing 10 is much higher than the probability of losing 40, the agent will still choose $\delta_2$. Risk neutral agents will always have a linear utility function. This means that the utility of an outcome is proportional to the outcome itself. More rational agents tend to be more sensitive to risk, especially when dealing with high-stakes situations. In general, rational agents show a tendency to avoid high risks when the payoff is insufficient to compensate for them, and they usually prefer an action course with a lower payoff and a higher probability of success. In addition, rational agents sometimes accept to bear small losses in order to avoid situations where there is a low probability of suffering a very large loss. This type of agent is called \textit{Risk Averse}.
+Figure \ref{fig:risk-neutral} shows two agents that are risk neutral. The first agent is gain-maximizing, and the second agent is loss-minimizing. The gain-maximizing agent will always choose $\delta_1$ because it has a higher potential gain of 100. Whereas the loss-minimizing agent will always choose $\delta_2$ because it has a lower potential loss, even though the probability of losing 10 is much higher than the probability of losing 40, the agent will still choose $\delta_2$. Risk-neutral agents will always have a linear utility function. This means that the utility of an outcome is proportional to the outcome itself. More rational agents tend to be more sensitive to risk, especially when dealing with high-stakes situations. In general, rational agents show a tendency to avoid high risks when the payoff is insufficient to compensate for them, and they usually prefer an action course with a lower payoff and a higher probability of success. In addition, rational agents sometimes accept to bear small losses in order to avoid situations where there is a low probability of suffering a very large loss. This type of agent is called \textit{Risk-Averse}.
 
 \begin{figure}[H]
     \centering
@@ -223,11 +223,11 @@ Figure \ref{fig:risk-neutral} shows two agents that are risk neutral. The first 
         
         \textit{Small loss over an unlikely very big loss}
     \end{minipage}
-    \caption{Risk averse agents' decision-making}
+    \caption{Risk-averse agents' decision-making}
     \label{fig:risk-averse}
 \end{figure}
 
-Two distinct situations are shown in Figure \ref{fig:risk-averse} to illustrate how an agent with a risk averse attitude will always choose the action that involves the lowest risk. The utility function of a risk averse agent is concave, with low risk outcomes having a bigger utility score. Some agents are inherently more risk loving (\textit{Risk Seeking}). They will be more willing to take risks in order to achieve a higher payoff, even if it involves a higher risk. The utility function of a risk seeking agent is convex, with high profitability outcomes having a bigger utility score. Figure \ref{fig:risk-seeking} shows how a risk seeking agent will behave in the same previously shown situations.
+Two distinct situations are shown in Figure \ref{fig:risk-averse} to illustrate how an agent with a risk-averse attitude will always choose the action that involves the lowest risk. The utility function of a risk-averse agent is concave, with low risk outcomes having a bigger utility score. Some agents are inherently more risk loving (\textit{Risk-Seeking}). They will be more willing to take risks in order to achieve a higher payoff, even if it involves a higher risk. The utility function of a risk-seeking agent is convex, with high profitability outcomes having a bigger utility score. Figure \ref{fig:risk-seeking} shows how a risk-seeking agent will behave in the same previously shown situations.
 
 \begin{figure}[H]
     \centering
@@ -268,11 +268,11 @@ Two distinct situations are shown in Figure \ref{fig:risk-averse} to illustrate 
         
          \textit{Accepts the risk}
     \end{minipage}
-    \caption{Risk seeking agents' decision-making}
+    \caption{Risk-seeking agents' decision-making}
     \label{fig:risk-seeking}
 \end{figure}
 
-Typically, the preferences and risk tolerance of an agent will be dynamic, changing based on a broad range of factors such as current wealth, type of risk, and previous experiences. All of these factors make it hard to model the agent's preferences in one mathematical construct; however, \cite{alnazer2022risk} proposes some risk-based utility functions. Figure \ref{fig:risk-based-utility} shows how the utility function of an agent might look based on their risk attitude.
+Typically, an agent's preferences and risk tolerance will be dynamic, changing based on a broad range of factors such as current wealth, type of risk, and previous experiences. These factors make it hard to model the agent's preferences in one mathematical construct; however, \cite{alnazer2022risk} proposes some risk-based utility functions. Figure \ref{fig:risk-based-utility} shows how the utility function of an agent might look based on their risk attitude.
 
 
 
@@ -352,7 +352,7 @@ Typically, the preferences and risk tolerance of an agent will be dynamic, chang
             samples=100
           ]
           {x^2};
-          \addlegendentry{risk seeking}
+          \addlegendentry{risk-seeking}
         \end{axis}
       \end{tikzpicture}
     \end{minipage}
@@ -360,12 +360,12 @@ Typically, the preferences and risk tolerance of an agent will be dynamic, chang
     \label{fig:risk-based-utility}
 \end{figure}
 
-At the end of this section, we would like to point out that although it has been shown \cite{kahneman2013prospect} that the expected utility theory fails as a descriptive theory due to its inability to successfully predict human behavior in some situations, it is a very suitable normative theory that can be used to guide the decision-making process of rational agents, especially when combined with a good dynamic utility function.
+At the end of this section, we would like to point out that although it has been shown \cite{kahneman2013prospect} that the expected utility theory fails as a descriptive theory due to its inability to predict human behavior in some situations successfully, it is a very suitable normative theory that can be used to guide the decision-making process of rational agents, especially when combined with a good dynamic utility function.
 
 \subsection{Risk attitude and HTN planning}
-Our model of utility-based HTN planning can be easily extended to enable agents to make decisions based on their risk attitude, by having a utility function that takes into account the risk involved in the decision. One benefit that we have is that we are not bound to one mathematical construct; we can have multiple utility functions corresponding to different risk attitudes, and we can switch between them, choosing the function that better suits the agent's current situation. This allows our agents to have a more flexible and dynamic attitude toward risk. We can also utilize the rule-based nature of HTN to create a set of rules that can override the current risk attitude of an agent in some situations where we believe the agent would be better off with a more or less risk-sensitive attitude. Let us consider the following scenario where we have a stock-trading agent: The agent has a hand-crafted utility function with an overall risk-averse attitude that is based on a plethora of financial and economic factors. However, it would be beneficial for the agent to have a set of rules in place that can override its risk tolerance in real time to react to sudden changes in the market. Such rules should not only be used to change the agent's attitude toward risk; they can also be used to directly interfere and change the evaluation of a given action to be more or less risky. Going back to our previous example, shorting a stock\footnote{\url{https://en.wikipedia.org/wiki/Short_(finance)}} is usually a big risk that should be avoided. However, if Warren Buffet\footnote{\url{https://en.wikipedia.org/wiki/Warren_Buffett}} is shorting stock X with a large sum of money, the action of shorting that stock should no longer be seen as risky.
+Our model of utility-based HTN planning can be easily extended to enable agents to make decisions based on their risk attitude by having a utility function that takes into account the risk involved in the decision. One benefit that we have is that we are not bound to one mathematical construct; we can have multiple utility functions corresponding to different risk attitudes, and we can switch between them, choosing the function that better suits the agent's current situation. This allows our agents to have a more flexible and dynamic attitude toward risk. We can also utilize the rule-based nature of HTN to create a set of rules that can override the current risk attitude of an agent in some situations where we believe the agent would be better off with a more or less risk-sensitive attitude. Let us consider the following scenario where we have a stock-trading agent: The agent has a hand-crafted utility function with an overall risk-averse attitude that is based on a plethora of financial and economic factors. However, it would be beneficial for the agent to have a set of rules in place that can override its risk tolerance in real time to react to sudden changes in the market. Such rules should not only be used to change the agent's attitude toward risk; they can also be used to directly interfere and change the evaluation of a given action to be more or less risky. Going back to our previous example, shorting a stock\footnote{\url{https://en.wikipedia.org/wiki/Short_(finance)}} is usually a big risk that should be avoided. However, if Warren Buffet\footnote{\url{https://en.wikipedia.org/wiki/Warren_Buffett}} is shorting stock X with a large sum of money, the action of shorting that stock should no longer be seen as risky.
 
-Lastly, we would like to note that it is beneficial to utilize the concept of risk attitude in HTN agents even when the concept of utility is not modeled, since it enables us to group actions and guide the decision-making process using one dynamic switch.
+Lastly, we would like to note that it is beneficial to utilize the concept of risk attitude in HTN agents even when the concept of utility is not modeled since it enables us to group actions and guide the decision-making process using one dynamic switch.
 
 \begin{Listing}
     \begin{lstlisting}[language=HDDL]

@@ -1,0 +1,76 @@
+\section{Poker}
+\label{sec:poker}
+% what is poker
+Poker is an umbrella term used to describe a family of card games with a similar structure but different rules and objectives
+% history of poker
+The origins of poker are shrouded in mystery; however, there is a consensus \cite{roya_2021} that poker in its modern form evolved from the French game Poque in the early 18th century \cite{williamson2012frontier}.
+The game was popularized by the World Series of Poker\footnote{\url{https://en.wikipedia.org/wiki/World_Series_of_Poker}}, which was first held in 1970. At the beginning of the 21st century, poker's popularity soared mostly due to the introduction of television coverage, which transformed poker into a spectator sport. Online poker also played a significant role in making the game more popular because the game was suddenly readily accessible. As a result, poker is now considered a staple of casinos and card rooms across the globe.
+
+% why is poker interesting
+Numerous factors make poker a fascinating game. It is a game that is easy to learn but hard to master. The most complicated poker variations are difficult due to the strategies and playing dynamics involved, not the rules. Good players must master a broad range of skills, including reading other players, calculating odds and probabilities, and utilizing mathematics to make profitable decisions. The element of luck and the randomness of outcomes make the game full of surprises and excitement. A single card may completely alter the outcome of a hand. In contrast to other gambling games, such as blackjack, baccarat, and roulette, that are designed to give the house an edge, poker is a game where players compete against one another. Although luck plays a big role in poker, its effects are only short-term, and better players will always beat weaker players over the long run.
+
+\subsection{The Game}
+\label{sec:poker-game}
+A game of poker consists of a series of rounds (also called hands or deals\footnote{Since poker terminology is often ambiguous, we have included in Appendix \ref{appendix:pokerterms} a glossary of poker terms used throughout this work.}). Depending on the variant of the game, a round's structure may vary significantly, but typically a round consists of multiple stages. Generally, each stage begins with introducing new cards; after that, players have the opportunity to place bets. Players bet when they believe that their hand is superior to the hands of their opponents. The bettor must contribute their bet amount to the pot when a bet is placed. If they wish to continue playing, the highest bet has to be matched (\textit{called}) or \textit{raised} by other players. When a player is unwilling to match the highest bet, they can \textit{fold}, but that will cost them all the money they have already contributed to the pot. If all players except one have folded, the remaining player wins the pot automatically. Otherwise, the round eventually reaches the \textit{showdown}, where players reveal their hands, and the best hand wins the pot. How player hands are constructed and ranked is specific to each game variation.
+
+% game dynamics
+\subsection{Game Dynamics}
+Many elements of poker make it a suitable environment for a wide range of strategies and tactics. In this section, we will explore some of these elements.
+
+\subsubsection{Forced bets}
+Winning the pot is the main incentive for players to accept the risks involved in the game. A larger pot will motivate players to take higher risks and make them more likely to bet on weaker hands. Without this incentive, the game would be too slow and boring, with players only betting when they hold stronger hands. Poker utilizes forced bets to ensure players always have the incentive to act. There are different types of forced bets, but we will discuss only two: the \textit{ante} and the \textit{blinds}. \textit{Ante} is a fixed amount that each player must contribute to the pot before the beginning of each round. \textit{Blinds} are two forced bets that are placed at the start of the round by two players, the \textit{small blind} and the \textit{big blind}. The position of the blinds is rotated around the table to keep the game fair.
+
+
+\subsubsection{Raise, Call, or Fold}
+Usually, players fold when they deem it too risky or expensive to continue, so they try to cut their losses by folding, as folding will only get more expensive in the later stages of the round. When players are not confident with their cards but believe there is a potential for their hand to get better later in the round, they call the last bet by contributing a matching amount to the pot. If there were no previous bets, then the player can \textit{check}, which is a free call. In games where blinds are collected, no checks can be placed in the first round stage because blinds are considered bets. A raise can happen when players believe their hand is strong enough to win the pot. After a raise, all players who have not folded yet have to decide whether they want to fold and lose all the money they have already contributed to the pot or continue by calling or \textit{re-raising}, making the pot bigger. If a player is already in the pot and does not have enough money to match the last bet, they can go \textit{all-in}, which means they will contribute all the money they have left to the pot.
+
+These three actions offer players endless possibilities for employing tactics and strategies. In poker, information is invaluable since it enables players to make better decisions. Players always leak information about their hands to their opponents with every action they take, which creates a dynamic where players must balance the risk of revealing too much information while trying to maximize their potential win. It also allows players to \textit{bluff}, which is a strategy that involves deceiving opponents by making them believe that a player has a better hand than they actually do. When a player has a fairly strong hand but does not wish to be challenged by other players, they may make a high raise to scare the opponents. Sometimes a player will check even though they have a very strong hand because they do not want to discourage other players from entering the pot. When holding a strong hand, a combination of calls and small raises could also entice opponents into making high raises. Even folds can be used to deceive opponents. For example, a player may often fold, even with stronger hands, to make opponents believe that he only participates when he has a strong hand, making his raises more credible and scary to challenge. 
+
+Some game variations limit the minimum and maximum raising amounts or the number of raises that can be made in a round. These restrictions prevent players from raising too much and help maintain the game at a reasonable pace.
+
+
+\subsubsection{Position}
+Player position refers to the order in which players are prompted to act. A player \textit{has position} over opponents who act before him and is \textit{out of position} to opponents who act after him. In most poker variations, the player's position is a crucial factor. Being in a late position allows players to observe how the opponents have acted. Additionally, as players fold, the players in position will have fewer players challenging their hands. Players will always fold a given set of cards in an early position, but they will have no problem calling or raising the same cards from a late position. Early positions also have advantages; for example, being out of position enables a player to raise the stakes for the players after him. Each successive round rotates positions around the table to keep the game fair.
+
+
+
+
+\subsubsection{Optimality vs. Exploitability}
+% poker is hard to much to master
+The characteristics that make poker an interesting game also increase the game's complexity. To combat this complexity, good players utilize two strategies in their play. The first strategy is based on Nash equilibrium, which is a concept in game theory that describes a situation where a player cannot increase their potential gain by changing their strategy. Such a strategy, called optimal strategy, will always consider the worst case and choose a course of action that minimizes loss. A player following an optimal strategy cannot find a better strategy when playing against another optimal player. The term \qq{optimal} is quite misleading here, as an optimal strategy does not maximize potential gain but minimizes potential loss. An optimal strategy does not seek to defeat other players but to defend against their best possible course of action. This means an optimal strategy is not necessarily the best strategy, especially in the context of poker, where players greatly deviate from the optimal strategy. Another major downside is being quite predictable. The static nature of optimal strategies allows opponents who are not constrained by optimality to explore weaknesses
+without fear of being punished.
+
+While optimal strategy is indifferent to the opponent's actions, exploitative strategy focuses on identifying and capitalizing on the opponent's tendencies. Exploitative strategy is based on the premise that if the opponent's strategy is known or can be predicted, one should choose the action that maximizes gain. Let us consider the game of rock-paper-scissors to showcase the fundamental difference between the two strategies. An optimal player would choose his actions randomly, disregarding the opponent's past actions. Even if the opponent had just played rock eight consecutive times, an optimal player would not prefer paper over the other two alternatives. A maximizer player, on the other hand, will recognize the opponent's tendency to play rock and choose paper as the next action. It is important to note that deviating from the optimal strategy will always introduce risk and create weaknesses that can be exploited.For example, the opponent may have been setting a trap with his previous moves. Therefore the maximizing player is taking a risk by choosing paper. Predicting the opponent's next move is not easy, but analyzing the opponent's playing style can give a good indication of their preferences and risk tolerance.
+
+Good poker players utilize the two strategies in tandem, switching between them seamlessly.
+
+
+\subsubsection{Texas Hold'em}
+
+In this work, we are mainly interested in \qq{No-limit Texas Hold'em}, one of the most popular poker variations. Texas Hold'em is regarded as one of the more advanced poker variations from a strategy point of view, evidenced by the experts' divergent opinions on how to play a specific hand \cite{sklansky_2003}. Professional poker players favor Texas Hold'em because it is the variant in which they can win the highest amount of money with the lowest level of risk since luck has less of an impact on the outcome of the game compared to other poker variants \cite{malmuth_2004}.
+
+Each round begins with the \textit{Preflop}, during which the small and big blinds are collected. Next, each participant is dealt two \textit{Pocket} cards face down. In the next stage, the \textit{Flop}, three face-up \textit{community cards} are dealt to the \textit{board}. All players can use community cards to build a 5-card hand. The terms \qq{community cards} and \qq{board} can be used interchangeably. In the following stages, \textit{Turn} and \textit{River}, two additional face-up cards are added to the board. After betting on the River, the \textit{Showdown} begins, and the player with the best hand wins the pot. In the case of a tie, the pot is split. Table \ref{table:hand_ranking} shows the hand ranking in No-limit Texas Hold'em.
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{|l|l|l|l|}
+        \hline
+       \textbf{Rank} & \textbf{Description} & \textbf{Example} \\ \hline
+        Royal Flush & Five high cards in sequence, all of the same suit & \card{D}{A},\card{D}{K},\card{D}{Q},\card{D}{J},\card{D}{T} \\ \hline
+        Straight Flush & Five cards in sequence, all of the same suit & \card{D}{7},\card{D}{6},\card{D}{5},\card{D}{4},\card{D}{3} \\ \hline
+        Four of a Kind & Four cards of the same rank & \card{S}{8},\card{H}{8},\card{D}{8},\card{C}{8},\card{S}{2} \\ \hline
+        Full House & Three of a kind and one paire & \card{H}{3},\card{D}{3},\card{C}{3},\card{H}{2},\card{D}{2} \\ \hline
+        Flush & Five cards of the same suit & \card{D}{A},\card{D}{T},\card{D}{6},\card{D}{4},\card{D}{2} \\ \hline
+        Straight & Five cards in sequence, not of the same suit & \card{H}{9},\card{C}{8},\card{C}{7},\card{D}{6},\card{H}{5} \\ \hline
+        Three of a Kind & Three cards of the same rank & \card{C}{8},\card{S}{8},\card{D}{8},\card{D}{4},\card{C}{2}\\ \hline
+        Two Pair & Two one pairs & \card{S}{T},\card{C}{T},\card{C}{8},\card{C}{8},\card{H}{4}\\ \hline
+        One Pair & Two cards of the same rank & \card{S}{T},\card{C}{T},\card{D}{9},\card{S}{6},\card{H}{2}\\ \hline
+        High Card & None of the above & \card{S}{T},\card{C}{7},\card{D}{5},\card{C}{3},\card{S}{2}\\ \hline
+    \end{tabular}
+    \caption{Hand Ranking in No-limit Texas Hold'em}
+    \label{table:hand_ranking}
+\end{table}
+
+\filbreak
+
+

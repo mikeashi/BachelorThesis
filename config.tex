@@ -1286,3 +1286,9 @@
 
 % math bbm
 \usepackage{bbm}
+
+
+% card command
+\usepackage{pifont}
+
+\newcommand\card[2]{#2\ifthenelse{\equal{#1}{D}}{\ding{169}}{\ifthenelse{\equal{#1}{H}}{\ding{170}}{\ifthenelse{\equal{#1}{C}}{\ding{168}}{\ifthenelse{\equal{#1}{S}}{\ding{171}}{}}}}}
