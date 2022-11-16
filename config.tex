@@ -1292,3 +1292,25 @@
 \usepackage{pifont}
 
 \newcommand\card[2]{#2\ifthenelse{\equal{#1}{D}}{\ding{169}}{\ifthenelse{\equal{#1}{H}}{\ding{170}}{\ifthenelse{\equal{#1}{C}}{\ding{168}}{\ifthenelse{\equal{#1}{S}}{\ding{171}}{}}}}}
+
+% stars
+\usepackage{scalerel}
+\usepackage{stackengine}
+\usepackage{pgf}
+\newcounter{iloop}
+\newcommand\openbigstar[1][0.7]{%
+  \scalerel*{%
+    \stackinset{c}{-.125pt}{c}{}{\scalebox{#1}{\color{white}{$\bigstar$}}}{%
+      $\bigstar$}%
+  }{\bigstar}
+}
+\newcommand{\Stars}[1]{\ensuremath{%
+\pgfmathtruncatemacro{\imax}{ifthenelse(int(#1)==#1,#1-1,#1)}%
+\pgfmathsetmacro{\xrest}{0.9*(1-#1+\imax)}%
+\setcounter{iloop}{0}%
+\loop\stepcounter{iloop}\ifnum\value{iloop}<\the\numexpr\imax+1
+\bigstar\repeat
+\openbigstar[\xrest]%
+\setcounter{iloop}{0}%
+\loop\stepcounter{iloop}\ifnum\value{iloop}<\the\numexpr5-\imax\relax
+\openbigstar[.9]\repeat}}

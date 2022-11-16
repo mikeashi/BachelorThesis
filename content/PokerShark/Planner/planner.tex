@@ -1,0 +1,70 @@
+
+\section{The Planner}
+
+The first big decision we faced during the development of PokerShark was choosing which planner we wanted to use. We had several requirements that we wanted present in the planner. First, the planner must be performant. We are not looking to find the most efficient planner because we anticipate that the network size will be limited to a few hundred tasks. We prefer the planner to be battle-tested. Many planners were conceived and developed in academic settings but have yet to be tested in the real world. We wanted to avoid these planners.
+
+Poker is a complex domain, and a game of poker has many elements and variables, making it more challenging to describe the game's state. That is why we need the planner to have an expressive description language that is easy to use and not too difficult to learn. Furthermore, defining the bot strategy will be tedious and require a lot of fine-tuning. Hence the planner needs to provide easy debugging tools.
+
+Typically HTN planners do not support utility nur expected utility, which is essential to our work. We have to assume that we will have to extend the functionality of the planner, so we have to consider the extensibility of the planner, which introduces an array of factors, such as the programming language, the quality of the code, the architecture, the frameworks..., and a lot of other factors. Most likely, we will also have to modify the description language, which makes the parser of the planner a very important factor to consider. 
+
+Lastly, we have to think about the integration between the planner and the bot. We prefer a seamless integration where the bot can notify the planner about the game's state and receive the planner's decision. We will explore next some of the planners that we have considered:
+
+\subsection*{JSHOP}
+
+JSHOP is part of the SHOP (Simple Hierarchical Ordered Planner) project\footnote{\url{http://www.cs.umd.edu/projects/shop/description.html}} developed by the University of Maryland. The planner is a Java-based implementation of SHOP2. JSHOP was first released in 2005, making it one of the older planners we have considered. It was part of numerous studies and was used in many applications, which makes us more confident in its performance and reliability. SHOP planners have a custom description format developed and extended throughout the years. JSHOP uses ANTLR3\footnote{\url{https://www.antlr3.org/}} to parse domain and problem definitions. Rather than interpreting the definition files, JSHOP compiles them into Java code that the planner can call, which makes JSHOP harder to integrate.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{graphics/jshop.png}
+    \caption{Multiple translation and read/write operations required.}
+    \label{fig:jshop}
+\end{figure}
+
+
+
+JSHOP does not support utility nur expected utility. Although the code is well-documented and can be considered clean, it will be challenging to extend due to the architecture. Since the description format also needs to be extended, ANTLR rules and grammar files must be modified. ANTLR3 is notoriously tedious, and we rather not deal with it. The planner has a GUI to run plans, which can be helpful for debugging, but it is not ideal. Nevertheless, JSHOP is a great planner with some advantages and disadvantages that must be considered for the final decision.
+
+
+
+
+
+\subsection*{SHOP3}
+SHOP3\footnote{\url{https://shop-planner.github.io/}} is the successor of SHOP2, which means it benefits from all the expertise that went into SHOP2. Unfortunately, it is Lisp-based, which is personally a big downside. In addition, the planner does not support expected utility and must be extended. On the other hand, the planner supports PDDL and provides excellent debugging features.
+
+
+
+\subsection*{PANDA}
+
+The PANDA framework\footnote{\url{https://panda-planner-dev.github.io/}} is one of the most promising candidates. The planner is developed and maintained by the Institute of Artificial Intelligence at Ulm University. The PANDA framework consists of several c++ modules that provide various features, such as plan verification and repair. However, the planner uses a custom parser that supports HDDL and the SHOP format. Modifying a custom parser can take a lot of work, especially with the planner's complex parsing pipeline that involves many modules and transitionary formats. Undoubtedly, PANDA is a good planner but has yet to be battle-tested, and it does not have great potential for extension.
+
+
+
+\subsection*{InductorHtn}
+
+InductorHtn\footnote{\url{https://github.com/EricZinda/InductorHtn}} was not developed in an academic setting. It was originally intended to be part of an ios-based game engine. The planner draws a lot of inspiration from SHOP2. It uses Prolog as a description format, but it also provides the ability to use native C++ constructs to define the planning domain and problem. This is a significant advantage as no compilation is required to run the planner, which greatly facilitates the integration process. InductorHtn also provides good debugging features. However, the planner's code lacks documentation and does not look like a great candidate for modification.
+
+
+\subsection*{FluidHTN}
+
+FluidHTN\footnote{\url{https://github.com/ptrefall/fluid-hierarchical-task-network}} is a feature-rich planner based around the Builder pattern's principles. The planner offers numerous features, including partial planning, domain splicing, and early rejection. FluidHTN supports only native domain definition. However, it has a powerful and expressive domain builder, which greatly simplifies domain and problem description. Moreover, it has great debugging tools that are superior to almost all other planners.
+
+FluidHTN is the first candidate that was built with extensibility in mind. As a result, all the planner's components and elements are easy to modify, extend or replace. In addition, the planner has surprisingly a big active community, especially game developers, which suggests that the planner is performant and battle-tested enough for us to consider a good candidate. Finally, having native domain definition support makes the integration much easier. 
+
+
+\begin{table}[H]
+    \centering
+    \footnotesize
+    \begin{tabular}{|l|c|c|c|c|c|l|}
+        \hline
+        \textbf{Planner}     & \textbf{Maturity} & \textbf{Expressivnise} & \textbf{Extensibility} & \textbf{Debugging} & \textbf{Integration} & \textbf{Overall} \\ \hline
+        \textbf{JSHOP}       & 5                 & 4                      & 3                      & 2                  & 2                    & \Stars{3.2}      \\ \hline
+        \textbf{SHOP3}       & 5                 & 4                      & 1                      & 3                  & 1                    & \Stars{2.8}      \\ \hline
+        \textbf{PANDA}       & 2                 & 4                      & 1                      & 2                  & 0                    & \Stars{1.8}      \\ \hline
+        \textbf{InductorHtn} & 4                 & 5                      & 3                      & 3                  & 2                    & \Stars{3.4}      \\ \hline
+        \textbf{FluidHTN}    & 5                 & 5                      & 5                      & 4                  & 5                    & \Stars{4.8}      \\ \hline
+    \end{tabular}
+    \caption{Planner comparison.}
+    \label{tab:planner-comparison}
+\end{table}
+
+Table \ref{tab:planner-comparison} shows our final evaluation of the planners. We have used a 5-point scale to evaluate the planners. Our evaluation is based on the following criteria: maturity, expressiveness, extensibility, debugging, and integration and is heavily influenced by our preferences. Overall, FluidHTN is the most complete planner for our use case. 
