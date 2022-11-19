@@ -33,10 +33,23 @@ This statistic complements the last two. It shows how often the player won post-
     \label{fig:matrix}
 \end{figure}
 
-PokerShark uses the previous indexes to infer the opponent's playing style. Additionally, an adjustment matrix is created for each opponent. The adjustment matrix has an entry for each possible pocket. Each entry represents the probability of the opponent holding that pocket. This matrix is updated following each action the opponent performs based on its playing style. After several rounds, PokerShark will have a basic estimate of the opponent's preferences and playing ranges. Figure \ref{fig:matrix} shows an example of the adjustment matrix.
+\subsection{Opponent Ranges}
 
-% hand strength estimation
+PokerShark uses the previous ratios to infer the opponent's playing style. Additionally, an adjustment matrix is created for each opponent. The adjustment matrix has an entry for each possible pocket. Each entry represents the probability of the opponent holding that pocket. This matrix is updated following each action the opponent performs based on its playing style.
 
-% preflop
+The adjustment matrix starts with all possible pockets being equally likely to be played by the opponent. After each decision, the opponent makes a set of adjustment factors is chosen based on the observed playing style and applied to the matrix. The calling/raising range of the opponent gets more accurate as the game progresses. Figure \ref{fig:matrixProgression} shows how the adjustment matrix is refined over time. After several rounds, PokerShark will have a basic estimate of the opponent's preferences and playing ranges. 
 
-% postflop
+\begin{figure}[htp]
+
+    \centering
+    \includegraphics[width=.3\textwidth]{graphics/round_1.png}\hfill
+    \includegraphics[width=.3\textwidth]{graphics/round_5.png}\hfill
+    \includegraphics[width=.3\textwidth]{graphics/round_15.png}
+    
+    \caption{Adjustment matrix progression.}
+    \label{fig:matrixProgression}
+    
+\end{figure}
+
+The opponent's decision-making process is complex and involves many factors, such as position, the opponent's perception of other players, pot size, stack size, and many other factors. Therefore, we can not pretend that having an estimate of the preferred playing ranges is sufficient. However, it is important to understand how PokerShark interprets and utilizes this model to make better decisions, which we will explore in the next sections.
+

@@ -1,0 +1,17 @@
+\begin{lstlisting}[
+    showstringspaces=false,
+    columns=flexible,
+    basicstyle={\small\ttfamily},
+    breaklines=true,
+    breakatwhitespace=true,
+    tabsize=3]   
+    IfFirstToPot();   
+    Select("Loose Passive Game");
+        IfLoosePassiveGame();	
+        Action("Always Raise on Groups 4,5,6");
+            IfPocketFromGroup(4, 5, 6);
+            Do(RecommendAlwaysRaise3Or4BB);
+        End();
+    End();
+\end{lstlisting}
+  

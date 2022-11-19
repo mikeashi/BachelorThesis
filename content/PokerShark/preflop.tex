@@ -1,0 +1,118 @@
+\section{Preflop Strategy}
+
+Due to the dynamic of Texas Hold'em, how you play the preflop will greatly influence whether you win or lose money over the long run.
+Good players can predict how their hand will fare against their opponents and assess the potential of the hand improving over the following stages. The amount and the quality of information available to the player can vary depending on the situation. However, the two cards composing the pocket can be a great starting point for rational decision-making.
+
+The number of starting hands is limited ${52 \choose 2}$ = 1326 possible combinations. The majority of these hands are equal or share some similarities. Thus they can be categorized into 169 unique types. Because the number of combinations is relatively small, poker experts could set clear guidelines on how the preflop should be played, considering different factors such as position, number of opponents, playing style, and number of bets.
+
+PokerShark incorporates the guidelines from \cite{sklansky_2003} to construct a recommendation system, enabling the planner to leverage expert knowledge while choosing an action in the preflop.  The guidelines suggest grouping the 169 different types into nine groups based on hand strength. The groups are ordered from the strongest to the weakest. The table \ref{tab:handGroups} shows a small example of the defined groups and their corresponding hand types.
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{|l|l|}
+        \hline
+        Group 1: & AA, KK, QQ, JJ, AKs        \\ \hline
+        Group 2: & TT, AQs, AJs, KQs, AK      \\ \hline
+        Group 3: & 99, JTs, QJs, KJs, ATs, AQ \\ \hline
+        Group 4: & ...                        \\ \hline
+    \end{tabular}
+    \caption{Example of the hand groups}
+    \label{tab:handGroups}
+\end{table}
+
+The guidelines are grouped based on the position of the acting player: Early position, Middle position, Late position, and for the Blinds.
+For each position, detailed rules are given based on the state of the bot, the number of bets, and the state of the game. We have tried to the best of our ability to translate the guidelines into rules. Of course, some ambiguity is unavoidable, but we believe we have successfully captured the most important ideas and tactics.
+
+\begin{figure}[H]
+    \centering
+    \begin{minipage}{\textwidth}
+        \begin{minipage}{0.45\textwidth}
+            \textit{In an unraised pot, you can play all hands in Groups 1-5 when the game is typical or tough. In a loose, passive game it is all right to play the Group 6 hands as well.}
+        \end{minipage}
+        \hspace{0.05\textwidth}
+        \begin{minipage}{0.55\textwidth}
+            \input{code/rule1.tex}
+        \end{minipage}
+    \end{minipage}
+    \caption{Example of converting a guideline into a recommendation.}
+\end{figure}
+
+We decided to introduce an intermediate step between the guidelines and the decision for several reasons. First, following the guidelines strictly would result in the bot folding around 70\% of the time, which is correct when facing strong players. However, folding so often, particularly this early in the round, means the bot forfeits many potential wins by being too tight. Another reason is that the guidelines do not consider the calling/raising amounts. Thus a reasoning process needs to occur before making the final decision.
+
+Hand groups are great for categorizing hands, but they are too general and do not consider one important factor: the number of opponents. The number of opponents is a crucial factor that directly affects hand strength. For example, 99 and JTs are both in group 3. However, 99 has much bigger win odds when facing one opponent, while JTs has bigger odds when facing seven or more opponents.
+
+Pocket odds are difficult to estimate in the preflop because of the size of the search tree, especially when the number of opponents increases. However, Monte Carlo analysis can be used to run simulations to approximate the results.
+
+For every opponent count from one to nine, a Monte Carlo simulation was used to approximate the win odds for every possible starting hand. The results were cached in a hash table. PokerShark uses the recommendation of the guidelines and the odds from the hash table to make a decision based on the current risk attitude of the bot at that point in time.
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|l|l|l|l|l|l|l|l|l|l|l|}
+        \hline
+        Pocket & 1    & 2    & 3    & 4    & 5    & 6    & 7    & 8    & 9         \\ \hline
+        AA     & 85.3 & 73.4 & 63.9 & 55.9 & 49.2 & 43.6 & 38.8 & 34.7 & 31.1      \\ \hline
+        AKs    & 67.0 & 50.7 & 41.4 & 35.4 & 31.1 & 27.7 & 25.0 & 22.7 & 20.7      \\ \hline
+        AK     & 65.4 & 48.2 & 38.6 & 32.4 & 27.9 & 24.4 & 21.6 & 19.2 & 17.2      \\ \hline
+        AQs    & 66.1 & 49.4 & 39.9 & 33.7 & 29.4 & 26.0 & 23.3 & 21.1 & 19.3      \\ \hline
+        AQ     & 64.5 & 46.8 & 36.9 & 30.4 & 25.9 & 22.5 & 19.7 & 17.5 & 15.5      \\ \hline
+        AJs    & 65.4 & 48.2 & 38.5 & 32.2 & 27.8 & 24.5 & 22.0 & 19.9 & 18.1      \\ \hline
+        ...    & ... & ... & ... & ... & ... & ... & ... & ... & ...      \\ \hline
+    \end{tabular}
+    \caption{Simulation results hash table.}
+    \label{tab:hashTable}
+\end{table}
+
+\subsection{Risk Attitude}
+PokerShark has a dynamic risk attitude directly derived from the ratio of its current stack compared to its initial stack. The bot can have one of three attitudes toward risk: Risk-Averse, Risk-Neutral, and Risk-Seeking. The risk attitude is used to guide the planner in the preflop stage and choose a utility function in the later stages. We preferred this implementation over a dynamic utility function because this implementation gives us the benefit of clear thresholds that we can easily modify without crafting complex mathematical functions. However, we have built the bot in a flexible and modular way, so replacing this behavior with a sound mathematical function should be doable without much effort. 
+
+\begin{Algorithmus}[H]
+    \caption{PokerShark Risk Attitude}
+    \label{alg:sample}
+    \begin{algorithmic}
+        \Procedure{GetAttitude}{$CurrentStack, InitialStack$}
+        \State $Attitude \gets RiskNeutral$
+        \If{$CurrentStack > InitialStack * 1.5$}
+            \State $Attitude \gets RiskSeeking$
+        \ElsIf{$CurrentStack > InitialStack * 0.5$}
+            \State $Attitude \gets RiskAverse$ 
+        \EndIf
+            \State \Return $Attitude$
+        \EndProcedure
+    \end{algorithmic}
+\end{Algorithmus}
+
+\subsection{From Recommendation to Decision}
+
+The guidelines that we have implemented as HTN tasks will determine a recommendation. PokerShark tries to improve this recommendation based on the current situation. The recommendation can suggest to fold, call, or raise. PokerShark deals with each recommendation differently. In this section, we will explore how PokerShark deals with each recommendation.
+
+\subsubsection{Fold Recommendation}
+
+As we have already discussed, strictly following the guidelines will result in the bot folding 70\% of the time. Therefore, we decided to follow a looser strategy in the preflop.
+
+The authors of the guidelines did overlook some of the obvious situations. However, we believe they did not mention them because the player should always act rationally and deviate from these guidelines when the situation calls for it. For example, one situation where folding is obviously wrong is when it does not cost us anything to call. By folding, we lose a free chance of potentially getting to see the flop.
+
+The fold recommendation is handled differently based on the bot's risk attitude. If the bot's current attitude is risk-averse, we convert the fold recommendation into a call if the pocket has more than 60\% win odds, with one exception if the call amount is too big and the pocket has less than 80\% odds, then we fold. Otherwise, we follow the recommendation.
+If the bot is risk-neutral, we follow the previous process, but instead of calling, we do a min-raise if we are the first to the pot.
+In the case that the bot is more risk-seeking, we only fold if the pocket odds are less than 50\% or if the calling amount is too big and the pocket has less than 70\% win odds. If nobody has entered the pot yet, we raise one or two big blinds. Else we do a min-raise.
+
+
+\subsubsection{Call Recommendation}
+
+A call recommendation usually indicates that the bot's pocket and position are good. However, the guidelines do not consider the calling amount. Therefore, we have defined thresholds for each risk attitude. If the threshold is crossed, PokerShark converts the call recommendation into a fold decision. Otherwise, we either follow the call recommendation or do a min-raise based on the bot's attitude.
+
+\subsubsection{Raise Recommendation}
+We do a similar process to interpret a raise recommendation. The bot usually follows the recommendation. If the raise is too risky, we consider calling. If calling is also risky, we then fold. A big raise in the preflop can scare the opponents and make them exit the hand without betting. That is why the bot occasionally utilizes the tactic of check-raising, where the raise is replaced by a call, and after the opponents enter the pot, a raise can be made.
+
+
+\subsection{From Decision to Action}
+
+Human players are quick to notice tendencies in the opponent's behavior. A rule-based system means the bot will have clear patterns that rational players can pick up and exploit. We have decided to introduce stochasticity into the decisions making process of PokerShark by implementing the decision as a vector composed of three components, each corresponding with the probability of fold, call, and raise. PokerShark will randomly choose an action based on the weights in the decision vector. This produces the random behavior that we are looking for while providing the ability to definitely choose an action by setting its weight to one and the other two vector components two zero. A similar mechanism is used for the betting amount making the bot unpredictable and harder to read.
+
+
+
+
+\subsection{Fish Net}
+Players that do not have a great deal of experience in the game of poker are referred to as fish. In contrast, more experienced players are called sharks, hence the name PokerShark.
+Fish players tend to take more risks by calling or raising big amounts. Facing fish players in the preflop, especially if they are loose-aggressive, could be challenging. Therefore, we have created a mechanism that detects fish players and tries to exploit their playing style. Of course, this means PokerShark will deviate from optimal strategy and take big risks. For example, PokerShark will call big amounts or go all-in more often when facing a fish.
+
+
