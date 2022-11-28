@@ -9,7 +9,7 @@ Typically HTN planners do not support utility nur expected utility, which is ess
 
 \subsection*{JSHOP}
 
-JSHOP is part of the SHOP (Simple Hierarchical Ordered Planner) project\footnote{\url{http://www.cs.umd.edu/projects/shop/description.html}} developed by the University of Maryland. The planner is a Java-based implementation of SHOP2. JSHOP was first released in 2005, making it one of the older planners we have considered. It was part of numerous studies and was used in many applications, which makes us more confident in its performance and reliability. SHOP planners have a custom description format developed and extended throughout the years. JSHOP uses ANTLR3\footnote{\url{https://www.antlr3.org/}} to parse domain and problem definitions. Rather than interpreting the definition files, JSHOP compiles them into Java code that the planner can call, which makes JSHOP harder to integrate.
+JSHOP is part of the \gls{shop} project\footnote{\url{http://www.cs.umd.edu/projects/shop/description.html}} developed by the University of Maryland. The planner is a Java-based implementation of SHOP2. JSHOP was first released in 2005, making it one of the older planners we have considered. It was part of numerous studies and was used in many applications, which makes us more confident in its performance and reliability. SHOP planners have a custom description format developed and extended throughout the years. JSHOP uses ANTLR3\footnote{\url{https://www.antlr3.org/}} to parse domain and problem definitions. Rather than interpreting the definition files, JSHOP compiles them into Java code that the planner can call, which makes JSHOP harder to integrate.
 
 \begin{figure}[h]
     \centering
@@ -78,7 +78,9 @@ FluidHTN is clearly influenced by game development but is also designed to be ad
     \label{fig:agent}
 \end{figure}
 
-Using the planner in this configuration has numerous advantages, but it forces the planning domain to be static. We would like to have more control over the planning domain. Therefore we are not going to use the planner in this configuration. Instead, we will use the planner as a standalone planner that is not aware of the agent's state. This configuration is also useful for debugging and testing purposes. Instead, we will use FluidHTN as a standalone planner that receives the planning domain and context from the bot.
+Using the planner in this configuration has numerous advantages, but it forces the planning domain to be static. We would like to have more control over the planning domain. Therefore we are not going to use the planner in this configuration. Instead, we will use the planner as a standalone planner that is not aware of the agent's state. The planner will be used to generate plans that will be executed by the agent. The agent will be responsible for updating the world state and executing the plans. This configuration is shown in Figure \ref{fig:PokerSharkArchitecture}.
+
+%This configuration is also useful for debugging and testing purposes. Instead, we will use FluidHTN as a standalone planner that receives the planning domain and context from the bot.
 
 \begin{figure}[h]
     \centering
