@@ -1,7 +1,7 @@
 \section{Utility and Risk Awareness}
 \label{sec:utilityAnRisk}
 
-Classical HTN planners have several advantages over classical planners, but they lack any concept of utility. Classical HTN planners are satisfied when a solution is found, but in the real world, this is rarely sufficient. In the real world, we are typically interested in finding an optimal solution in some sense. For instance, we may only be interested in solutions that are safe, fast, or inexpensive. This section will provide an overview of the notion of utility and how it can be utilized to guide the planning process.
+Classical HTN planners have several advantages over classical planners, but they lack any concept of \textit{utility}. Classical HTN planners are satisfied when a solution is found, but in the real world, this is rarely sufficient. In the real world, we are typically interested in finding an optimal solution in some sense. For instance, we may only be interested in solutions that are safe, fast, or inexpensive. This section will begin with an overview of the concept of utility, followed by a discussion of how utility can be used to guide the planning process. In subsection 2.4.3, we introduce expected utility, and the section concludes with a discussion of risk attitudes.
 
 \subsection{Utility}
 The core concept of utility revolves around modeling the outcomes of an action or situation based on a set of criteria or metrics, which allows us to rank actions or outcomes and choose the most preferable option. Mathematically, utility can be represented via a set of binary relations over a set of actions or situations $\mathbf{\Delta}$ \cite{fishburn1968utility}.
@@ -29,7 +29,7 @@ The previous binary relations form an invaluable framework that enables us to ra
 
 
 \subsection{Utility-based HTN planning}
-One way of utilizing utility to guide an HTN planner is to assign each operator a utility score, but this is insufficient. HTN structures are intrinsically hierarchical, and the utility of a task is not necessarily identical to the utility of its subtasks. A significantly better approach is to assign a utility score to each operator, method, and compound task. The utility of a task is then the sum of its own utility and the utility of its most preferred subtask. In addition, it is essential to bear in mind that utility is extremely dynamic. Therefore, the planner must be able to recalculate the utility of each task as the planning process progresses or whenever the environment's state changes.
+One way of utilizing utility to guide an HTN planner is to assign each operator a utility score, but this is insufficient. HTN structures are intrinsically hierarchical, and the utility of a task is not necessarily identical to the utility of its subtasks. A significantly better approach is to assign a utility score to each operator, method, and compound task. The utility of a task is then the sum of its own utility and the utility of the subtask with the highest utility. In addition, it is essential to bear in mind that utility is extremely dynamic. Therefore, the planner must be able to recalculate the utility of each task as the planning process progresses or whenever the environment's state changes.
 
 \begin{figure}[H]
     \centering
@@ -66,7 +66,7 @@ One way of utilizing utility to guide an HTN planner is to assign each operator 
                     }
                 };
     \end{tikzpicture}
-    \caption{A simple HTN task network for commuting to work.}
+    \caption{A simple HTN task network for commuting to work. With $T_p$ and $T_c$ representing primitive and compound tasks, respectively, and $M_1$ and $M_2$ representing methods.}
     \label{fig:commute_to_work}
 \end{figure}
 Figure ~\ref{fig:commute_to_work} shows a simple HTN task network for commuting to work. This example will help us to illustrate the necessity of having a utility score for each HTN construct. If we exclusively assign utility values to the operators, there will be no way to express whether an agent prefers or dislikes using the train, for example. The compound task \qq{walk\_the\_remaining\_distance} can be reached via two distinct paths, and it would be illogical to assign it the same utility in both scenarios. The compound task \qq{commute\_to\_work} itself could have an inherently low utility value if the agent prefers to work from home.
@@ -96,10 +96,12 @@ To illustrate the limitations of basic utility, consider the scenario shown in F
         \label{fig:expected_utility}
 \end{figure}
 
-If the agent is acting solely based on basic utility, it will always choose action $\delta_2$ since its utility value is greater, In contrast, a rational agent will virtually always choose action $\delta_1$ because it has a greater expected value:
-$$ \mathbbm{E}(\delta_2) = 0.1 \times 7 + 0.9 \times 0  < \mathbbm{E}(\delta_1) = 0.4 \times 3 + 0.6 \times 0 $$
+Introducing probability renders basic utility absolute. Looking at the problem, a rational agent will virtually always choose action $\delta_1$, because it has, on average, a better outcome, but how can we capture this notion mathematically?
+$$ E(\delta_2) = 0.1 \times 7 + 0.9 \times 0  < E(\delta_1) = 0.4 \times 3 + 0.6 \times 0 $$
 
-In the previous example, we assumed that the agent had based its decision on the expected value, which can lead us to the wrong conclusion that the expected value can be used to represent expected utility. However, it was clear from the early stages of research that rational agents do not always act based on expected value. As previously discussed, value is an objective concept, whereas utility is far more subjective and can be influenced by an agent's preferences, needs, and risk tolerance. Expected value fails to capture the subjective nature of utility; thus, it is not a suitable tool for representing expected utility. To further illustrate this point, we need to introduce the \textit{St. Petersburg paradox}\footnote{\url{https://en.wikipedia.org/wiki/St._Petersburg_paradox}}, which demonstrates how an agent whose only criteria for decision-making is expected value would propose a course of action that no rational agent would ever consider:
+At first glance, the expected value might seem like a suitable tool to represent expected utility. However, it was clear from the early stages of research that rational agents do not always act based on expected value. As previously discussed, value is an objective concept, whereas utility is far more subjective and can be influenced by an agent's preferences, needs, and risk tolerance. Expected value fails to capture the subjective nature of utility; thus, it is not a suitable tool for representing expected utility.
+
+To further illustrate this point, we need to introduce the \textit{St. Petersburg paradox}\footnote{\url{https://en.wikipedia.org/wiki/St._Petersburg_paradox}}, which demonstrates how an agent whose only criteria for decision-making is expected value would propose a course of action that no rational agent would ever consider:
 
 \begin{quotation}
     A hypothetical casino in St. Petersburg offers the following game to a single player:
@@ -109,7 +111,7 @@ In the previous example, we assumed that the agent had based its decision on the
 Now the question is, \textit{how much would a rational agent be willing to pay as an entrance fee to play this game?}
 
 An agent using the expected value would be willing to pay an entrance fee up to the game's expected value which is infinite:
-$$  \mathbbm{E} = \frac{1}{2} \cdot 2 + \frac{1}{4} \cdot 4 + \frac{1}{8} \cdot 8 + \frac{1}{16} \cdot 16 + \dots = \infty$$
+$$  E = \frac{1}{2} \cdot 2 + \frac{1}{4} \cdot 4 + \frac{1}{8} \cdot 8 + \frac{1}{16} \cdot 16 + \dots = \infty$$
 
 which contradicts the fact that no rational agent would be willing to pay an arbitrarily large entrance fee to play this game. A better approach would be to define a utility function $\mathfrak{u}$ that reflects the agent's preferences. We can use $\mathfrak{u}$ to define the expected utility of an action $\delta$ over the probability distribution $\mathbbm{P}$ of all its possible outcomes $\Omega$.
 
@@ -227,7 +229,9 @@ Figure \ref{fig:risk-neutral} shows two agents that are risk neutral. The first 
     \label{fig:risk-averse}
 \end{figure}
 
-Two distinct situations are shown in Figure \ref{fig:risk-averse} to illustrate how an agent with a risk-averse attitude will always choose the action that involves the lowest risk. The utility function of a risk-averse agent is concave, with low risk outcomes having a bigger utility score. Some agents are inherently more risk loving (\textit{Risk-Seeking}). They will be more willing to take risks in order to achieve a higher payoff, even if it involves a higher risk. The utility function of a risk-seeking agent is convex, with high profitability outcomes having a bigger utility score. Figure \ref{fig:risk-seeking} shows how a risk-seeking agent will behave in the same previously shown situations.
+Two distinct situations are shown in Figure \ref{fig:risk-averse} to illustrate how an agent with a risk-averse attitude will always choose the action that involves the lowest risk. The utility function of a risk-averse agent is concave, with low risk outcomes having a bigger utility score.
+
+Some agents are inherently more risk loving (\textit{Risk-Seeking}). They will be more willing to take risks in order to achieve a higher payoff, even if it involves a higher risk. The utility function of a risk-seeking agent is convex, with high profitability outcomes having a bigger utility score. Figure \ref{fig:risk-seeking} shows how a risk-seeking agent will behave in the same previously shown situations.
 
 \begin{figure}[H]
     \centering
