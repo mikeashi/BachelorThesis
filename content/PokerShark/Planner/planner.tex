@@ -3,7 +3,7 @@
 
 The first big decision we faced during the development of PokerShark was choosing which planner we wanted to use. We had several requirements that we wanted present in the planner. First, the planner must be performant. We are not looking to find the most efficient planner because we anticipate that the network size will be limited to a few hundred tasks. We prefer the planner to be battle-tested. Many planners were conceived and developed in academic settings but have yet to be tested in the real world. We wanted to avoid these planners. Poker is a complex domain, and a game of poker has many elements and variables, making it more challenging to describe the game's state. That is why we need the planner to have an expressive description language that is easy to use and not too difficult to learn. Furthermore, defining the bot strategy will be tedious and require a lot of fine-tuning. Hence the planner needs to provide easy debugging tools.
 
-Typically HTN planners do not support utility nur expected utility, which is essential to our work. We have to assume that we will have to extend the functionality of the planner, so we have to consider the extensibility of the planner, which introduces an array of factors, such as the programming language, the quality of the code, the architecture, the frameworks..., and a lot of other factors. Most likely, we will also have to modify the description language, which makes the parser of the planner a very important factor to consider. Lastly, we have to think about the integration between the planner and the bot. We prefer a seamless integration where the bot can notify the planner about the game's state and receive the planner's decision. We will explore next some of the planners that we have considered:
+Typically HTN planners do not support utility or expected utility, which is essential to our work. We have to assume that we will have to extend the functionality of the planner, so we have to consider the extensibility of the planner, which introduces an array of factors, such as the programming language, the quality of the code, the architecture, the frameworks..., and a lot of other factors. Most likely, we will also have to modify the description language, which makes the parser of the planner a very important factor to consider. Lastly, we have to think about the integration between the planner and the bot. We prefer a seamless integration where the bot can notify the planner about the game's state and receive the planner's decision. We will explore next some of the planners that we have considered:
 
 
 
@@ -33,7 +33,7 @@ SHOP3\footnote{\url{https://shop-planner.github.io/}} is the successor of SHOP2,
 
 \subsection*{PANDA}
 
-The PANDA framework\footnote{\url{https://panda-planner-dev.github.io/}} is one of the most promising candidates. The planner is developed and maintained by the Institute of Artificial Intelligence at Ulm University. The PANDA framework consists of several c++ modules that provide various features, such as plan verification and repair. However, the planner uses a custom parser that supports HDDL and the SHOP format. Modifying a custom parser can take a lot of work, especially with the planner's complex parsing pipeline that involves many modules and transitionary formats. Undoubtedly, PANDA is a good planner but has yet to be battle-tested, and it does not have great potential for extension.
+The PANDA framework\footnote{\url{https://panda-planner-dev.github.io/}} is one of the most promising candidates. The planner is developed and maintained by the Institute of Artificial Intelligence at Ulm University. The PANDA framework consists of several c++ modules that provide various features, such as plan verification and repair. However, the planner uses a custom parser that supports HDDL and the SHOP format. The high complexity of the parser and the parsing pipeline, including the number of modules and transitionary formats involved, can require a significant amount of time and effort to manage. Undoubtedly, PANDA is a good planner but has yet to be battle-tested, and it does not have great potential for extension.
 
 
 
@@ -65,11 +65,11 @@ FluidHTN is the first candidate that was built with extensibility in mind. As a 
     \label{tab:planner-comparison}
 \end{table}
 
-Table \ref{tab:planner-comparison} shows our final evaluation of the planners. We have used a 5-point scale to evaluate the planners. Our evaluation is based on the following criteria: maturity, expressiveness, extensibility, debugging, and integration and is heavily influenced by our preferences. Overall, FluidHTN is the most complete planner for our use case. 
+Table \ref{tab:planner-comparison} shows our final evaluation of the planners. We have used a 5-point scale to evaluate the planners. Our evaluation is based on the following criteria: documentation, expressiveness, extensibility, debugging, and integration and is heavily influenced by our preferences. Overall, FluidHTN is the most complete planner for our use case. 
 
 \subsubsection*{FluidHTN Showcase}
 
-FluidHTN is clearly influenced by game development but is also designed to be adaptable for any use case. The planner has a unique structure. Thus we would like to dedicate this section to showcasing its underlying concepts. FluidHTN is built for an agent to be dynamic. That is why it does not use problem definitions but instead uses the concept of world state, which is a model of the agent's environment. Programmatically, the state of the world is a simple array of objects. The world state may be shared with other actors or used as a model in isolation. Combining a shared state with operators that can affect the state turns the planner into a complete agent, which the planner excels at, especially with its state tracking, plan verification, and replanning.
+FluidHTN is clearly influenced by game development but is also designed to be adaptable for any use case. The planner has a unique structure. Thus we would like to dedicate this section to showcasing its underlying concepts. FluidHTN is built for an agent to be dynamic. Instead of calling the planner and providing the problem definition, the planner can be integrated directly with the world state enabling a more dynamic behavior where the planner can observe changes in the environment, changing the plan during run-time. By default, FluidHTN does not require the use of explicit goal states. Instead, it uses the results of task decomposition to determine whether planning is complete, should continue, or has failed. This allows the planner to be more flexible and adaptable, as it can handle a wider range of planning scenarios without the need for pre-defined goals.
 
 \begin{figure}[h]
     \centering
@@ -78,7 +78,7 @@ FluidHTN is clearly influenced by game development but is also designed to be ad
     \label{fig:agent}
 \end{figure}
 
-Using the planner in this configuration has numerous advantages, but it forces the planning domain to be static. We would like to have more control over the planning domain. Therefore we are not going to use the planner in this configuration. Instead, we will use the planner as a standalone planner that is not aware of the agent's state. The planner will be used to generate plans that will be executed by the agent. The agent will be responsible for updating the world state and executing the plans. This configuration is shown in Figure \ref{fig:PokerSharkArchitecture}.
+Using the planner in the configuration shown in figure \ref{fig:agent}, where FluidHTN uses a pre-defined domain, has numerous advantages, but it forces the planning domain to be static. We would like to have more control over the planning domain. Therefore we are not going to use the planner in this configuration. Instead, we will use the planner as a standalone planner that is not aware of the agent's state. The planner will be used to generate plans that will be executed by the agent. The agent is responsible for a number of tasks, including receiving game state information from the game server, updating its internal world state model, generating the necessary domain and context definitions, running the planner, and executing the resulting plans. This configuration is shown in Figure \ref{fig:PokerSharkArchitecture}.
 
 %This configuration is also useful for debugging and testing purposes. Instead, we will use FluidHTN as a standalone planner that receives the planning domain and context from the bot.
 
@@ -107,7 +107,7 @@ FluidHTN adopts the concepts of compound and primitive tasks of HTN. Compound ta
     \label{fig:select_sequence}
 \end{figure}
 
-The architecture of the planner makes it easy to introduce new representations of any component in the planning process. For example, Listing \ref{lst:RandomSelector} shows RandomSelector, which randomly selects and decomposes one of its subtasks.
+The architecture of the planner makes it easy to introduce new representations of any component in the planning process, such as tasks, conditions, and effects. For example, Listing \ref{lst:RandomSelector} shows RandomSelector, which randomly selects and decomposes one of its subtasks.
 
 \begin{Listing}
     \begin{lstlisting}[language={[Sharp]C}]
@@ -125,7 +125,9 @@ The architecture of the planner makes it easy to introduce new representations o
     \label{lst:RandomSelector}
 \end{Listing}
 
-Primitive tasks are defined as actions where each action could have a set of preconditions and a set of effects. FluidHTN has three effect types: PlanOnly, PlanAndExecute, and Permanent. Because of the architecture that we are using, it does not matter what type of effect our operators have because our world state is updated by the bot, not the planner. Lastly, FluidHTN provides great readability if used probably. Listing \ref{lst:readability} shows a snippet of PokerShark domain builder.
+Primitive tasks are defined as actions where each action could have a set of preconditions and a set of effects. Lastly, FluidHTN enable us to produce highly readable domain definitions, making them easier to modify or maintain. Listing \ref{lst:readability} shows a snippet of PokerShark domain that showcases how FluidHTN definition format is easier to understand compared to other description languages such as PDDL.
+
+
 \begin{Listing}
     \begin{lstlisting}[language={[Sharp]C}]
         Select("Raise Recommendation");    
@@ -135,9 +137,7 @@ Primitive tasks are defined as actions where each action could have a set of pre
                 Action("Fold if call to risky");
                     IfCallTooRisky();
                     Do(Fold);
-                End();
-            End();
-        ...
+                    ...
     \end{lstlisting}
     \caption{Snippet of PokerShark domain builder.}
     \label{lst:readability}

@@ -3,9 +3,9 @@
 Due to the dynamic of Texas Hold'em, how you play the preflop will greatly influence whether you win or lose money over the long run.
 Good players can predict how their hand will fare against their opponents and assess the potential of the hand improving over the following stages. The amount and the quality of information available to the player can vary depending on the situation. However, the two cards composing the pocket can be a great starting point for rational decision-making.
 
-The number of starting hands is limited ${52 \choose 2}$ = 1326 possible combinations. The majority of these hands are equal or share some similarities. Thus they can be categorized into 169 unique types. Because the number of combinations is relatively small, poker experts could set clear guidelines on how the preflop should be played, considering different factors such as position, number of opponents, playing style, and number of bets.
+The number of starting hands is limited ${52 \choose 2}$ = 1326 possible combinations. The majority of these hands are equal or share some similarities. Thus, they can be categorized into 169 unique types. Because the number of combinations is relatively small, poker experts could set clear guidelines on how the preflop should be played, considering different factors such as position, number of opponents, playing style, and number of bets.
 
-PokerShark incorporates the guidelines from \cite{sklansky_2003} to construct a recommendation system, enabling the planner to leverage expert knowledge while choosing an action in the preflop.  The guidelines suggest grouping the 169 different types into nine groups based on hand strength. The groups are ordered from the strongest to the weakest. The table \ref{tab:handGroups} shows a small example of the defined groups and their corresponding hand types.
+PokerShark incorporates the guidelines from \cite{sklansky_2003} to construct a recommendation system, enabling the planner to leverage expert knowledge while choosing an action in the preflop.  The guidelines suggest grouping the 169 different types into nine groups based on hand strength. The groups are ordered from the strongest to the weakest. Table \ref{tab:handGroups} shows a small example of the defined groups and their corresponding hand types.
 
 \begin{table}[h]
     \centering
@@ -16,7 +16,7 @@ PokerShark incorporates the guidelines from \cite{sklansky_2003} to construct a 
         Group 3: & 99, JTs, QJs, KJs, ATs, AQ \\ \hline
         Group 4: & ...                        \\ \hline
     \end{tabular}
-    \caption{Example of the hand groups}
+    \caption{Example of the hand groups based on potential strength defined by \cite{sklansky_2003}}
     \label{tab:handGroups}
 \end{table}
 
@@ -73,7 +73,7 @@ PokerShark has a dynamic risk attitude directly derived from the ratio of its cu
         \State $Attitude \gets RiskNeutral$
         \If{$CurrentStack > InitialStack * 1.5$}
             \State $Attitude \gets RiskSeeking$
-        \ElsIf{$CurrentStack > InitialStack * 0.5$}
+        \ElsIf{$CurrentStack < InitialStack * 0.5$}
             \State $Attitude \gets RiskAverse$ 
         \EndIf
             \State \Return $Attitude$
@@ -83,7 +83,9 @@ PokerShark has a dynamic risk attitude directly derived from the ratio of its cu
 
 \subsection{From Recommendation to Decision}
 
-The guidelines that we have implemented as HTN tasks will determine a recommendation. PokerShark tries to improve this recommendation based on the current situation. The recommendation can suggest to fold, call, or raise. PokerShark deals with each recommendation differently. In this section, we will explore how PokerShark deals with each recommendation.
+The guidelines that we have implemented as HTN tasks will determine a recommendation. PokerShark tries to improve this recommendation based on the current situation. The recommendation can suggest to fold, call, or raise. PokerShark deals with each recommendation differently. Converting the recommendation into a decision required us to define different thresholds. We have tried to choose the thresholds and the different decisions that we had to make reasonably, relying on intuition and our limited knowledge of the game, considering the different risk attitudes that the bot might have.
+
+We also want to clarify again how PokerShark utilizes the monte-carlo simulation mentioned in the previous sections. The planner has access to the hash table, which contains the results of the simulation shown in table \ref{tab:hashTable}. We implemented a precondition that checks if the current hand of the bot is greater/less than a given probability, also called equity.
 
 \subsubsection{Fold Recommendation}
 
@@ -106,13 +108,41 @@ We do a similar process to interpret a raise recommendation. The bot usually fol
 
 \subsection{From Decision to Action}
 
-Human players are quick to notice tendencies in the opponent's behavior. A rule-based system means the bot will have clear patterns that rational players can pick up and exploit. We have decided to introduce stochasticity into the decisions making process of PokerShark by implementing the decision as a vector composed of three components, each corresponding with the probability of fold, call, and raise. PokerShark will randomly choose an action based on the weights in the decision vector. This produces the random behavior that we are looking for while providing the ability to definitely choose an action by setting its weight to one and the other two vector components two zero. A similar mechanism is used for the betting amount making the bot unpredictable and harder to read.
+Human players are quick to notice tendencies in the opponent's behavior. A rule-based system means the bot will have clear patterns that rational players can pick up and exploit. We have decided to introduce stochasticity into the decisions making process of PokerShark by implementing the decision as a vector composed of three components, each corresponding with the probability of fold, call, and raise. PokerShark will randomly choose an action based on the weights in the decision vector. This produces the random behavior that we are looking for while providing the ability to definitely choose an action by setting its weight to one and the other two vector components to zero. A similar mechanism is used for the betting amount making the bot unpredictable and harder to read.
 
+We have to note here that each primitive task in the domain definition that is responsible for producing a decision will also set the different weights in the decision vector. For example, let us assume that somewhere in the domain definition of PokerShark, we have a sequence that causes the bot to fold if it holds a hand made up of 2 and 3. Listing \ref{lst:vector} shows such a sequence.
+
+\begin{Listing}
+    \begin{lstlisting}[language={[Sharp]C}]
+        Select("Fold on 23");
+	        IfPocketIsOneOf(new Pocket(Rank.Two, Rank.Three));
+		        Do(OftenFold);
+	        End();
+        End();
+    \end{lstlisting}
+    \caption{Fold if the pocket is 23.}
+    \label{lst:vector}
+\end{Listing}
+
+The OftenFold action will create a decision object. Like the one shown in Listing \ref{lst:oftenfold}.
+
+\begin{Listing}
+    \begin{lstlisting}[language={[Sharp]C}]
+        function Decision OftenFold(){
+            return new Decision() { Fold = 0.9, Call = 0.1, Raise = 0 } ;
+        }
+    \end{lstlisting}
+    \caption{Decision object that folds 90\% of the time}
+    \label{lst:oftenfold}
+\end{Listing}
+
+When converting the decision into an action, PokerShark will respect the weights defined in the decision vector and randomly choose one of the actions using the defined probabilities. For example, the OftenFold function will produce a decision that will get converted to a fold action 90\% of the time, which is the intended behavior of the sequence. However, there is a 10\% chance that PokerShark will call. This stochastic behavior is intended to deceive opponents and make predicting the behavior of PokerShark harder to read. 
 
 
 
 \subsection{Fish Net}
 Players that do not have a great deal of experience in the game of poker are referred to as fish. In contrast, more experienced players are called sharks, hence the name PokerShark.
-Fish players tend to take more risks by calling or raising big amounts. Facing fish players in the preflop, especially if they are loose-aggressive, could be challenging. Therefore, we have created a mechanism that detects fish players and tries to exploit their playing style. Of course, this means PokerShark will deviate from optimal strategy and take big risks. For example, PokerShark will call big amounts or go all-in more often when facing a fish.
+Fish players tend to take more risks by calling or raising big amounts. Facing fish players in the preflop, especially if they are loose-aggressive, could be challenging. Therefore, we have created a mechanism that detects fish players by analyzing their behavior and identifying patterns that are characteristic of fish players. The Fish Net also tries to exploit their playing style. Of course, this means PokerShark will deviate from the optimal strategy and take big risks. For example, PokerShark will call big amounts or go all-in more often when facing a fish.
+
 
 

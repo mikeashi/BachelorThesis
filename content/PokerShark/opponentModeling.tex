@@ -2,12 +2,12 @@
 \label{sec:opponentModeling}
 
 % opponent modeling
-As we have already established, information is a key factor in the game of Texas Hold'em. Depending on the position, we might get some or no information about the strength of the opponent's hand. In the early stages of the round, especially the preflop, we often need to make a decision solely based on the strength of our pocket. However, the strength of a hand is affected by many factors. Unlike chess, where we can assign a concrete evaluation of a given position no matter who the players are, the strength of a pocket or hand, in general, can only be estimated in correlation to the current situation and opponents. For example, a player in an early position with a pocket of \card{D}{A}\card{D}{Q} is contemplating whether he should raise, call or fold. The cards are suited, which makes the pocket stronger. Raising would be the correct action if the player is convinced his raise will not scare the opponents and make them fold. On the other hand, calling would be better if the opponents were tight and easily scared by preflop raises. Even folding would make sense if a tight passive opponent has just made a raise\footnote{a full analysis of AQ can be found in \cite{sklansky_2003}}.
+As we have already established, information is a key factor in the game of Texas Hold'em. Depending on the position, we might get some or no information about the strength of the opponent's hand. In the early stages of the round, especially the preflop, we often need to make a decision solely based on the strength of our pocket. However, the strength of a hand is affected by many factors. Unlike chess, where we can assign a concrete evaluation of a given position no matter who the players are, the strength of a pocket or hand, in general, can only be estimated in correlation to the current situation and opponents. For example, a player in an early position with a pocket of \card{D}{A}\card{D}{Q} is contemplating whether he should raise, call or fold. The cards are suited, which makes the pocket stronger. Raising would be the correct action if the player is convinced his raise will not scare the opponents and make them fold. On the other hand, calling would be better if the opponents were tight and easily scared by preflop raises. Even folding would make sense if a tight passive opponent has just made a raise\footnote{a full analysis of AQ can be found in \cite{sklansky_2003}}. The terms tight and loose refer to a player's calling/raising range, with tight players only calling/raising with strong hands. Passive and aggressive refer to a player's action preferences, with passive players calling more often than raising and aggressive players raising more often than calling.
 
 Understanding the opponent's playing style is essential for predicting future actions. PokerShark captures this notion using opponent models. When a game starts, a model is created for each opponent. This model gets refined with each action the opponent makes. We have to note here that deducing the preferences of an opponent based solely on the observed behavior is very hard, particularly if the available action history is limited. PokerShark does not keep track of the opponent's action history after the game is finished, primarily because that can be considered unfair, and the effects of doing so are out of the scope of this work.
 
 \subsection{Opponent Statistics}
-In order to model the opponent's playing style, we need to keep track of some statistics. The following statistics are used in PokerShark:
+In order to model the opponent's playing style, we need to keep track of some statistics. The following statistics are used in PokerShark and are adopted from \cite{johansson2009fish}:
 
 \subsubsection{VPIP - Voluntarily Put Money In Pot}
 Shows how often a player has voluntarily entered the pot in the preflop, either by calling or raising. VPIP is one of the most fundamental statistics used in player profiling, especially when combined with other statistics.
@@ -28,7 +28,7 @@ This statistic complements the last two. It shows how often the player won post-
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=\textwidth/2]{graphics/weights.png}
+    \includegraphics[width=5.8cm]{graphics/weights.png}
     \caption{Adjustment matrix example.}
     \label{fig:matrix}
 \end{figure}
@@ -37,7 +37,14 @@ This statistic complements the last two. It shows how often the player won post-
 
 PokerShark uses the previous ratios to infer the opponent's playing style. Additionally, an adjustment matrix is created for each opponent. The adjustment matrix has an entry for each possible pocket. Each entry represents the probability of the opponent holding that pocket. This matrix is updated following each action the opponent performs based on its playing style.
 
-The adjustment matrix starts with all possible pockets being equally likely to be played by the opponent. After each decision, the opponent makes a set of adjustment factors is chosen based on the observed playing style and applied to the matrix. The calling/raising range of the opponent gets more accurate as the game progresses. Figure \ref{fig:matrixProgression} shows how the adjustment matrix is refined over time. After several rounds, PokerShark will have a basic estimate of the opponent's preferences and playing ranges. 
+The adjustment matrix begins with all possible pockets being considered equally likely to be chosen by the opponent. After each decision made by the opponent, a set of adjustment factors is applied to the matrix based on the observed playing style.
+
+These factors reflect the preferences of players with similar states and help the matrix better predict the opponent's choices.
+As the game progresses, the accuracy of the matrix's predictions for the opponent's calling and raising ranges will improve. Figure \ref{fig:matrixProgression} shows how the adjustment matrix is refined over time. After several rounds, PokerShark will have a basic estimate of the opponent's preferences and playing ranges. 
+
+
+%We have collected the adjustment factors from various sources and had to fill gaps using only our intuition and limited knowledge of the game, which may not be optimal. A better solution would be to use a neural network or a more thorough statistical study to obtain more accurate adjustment factors for the matrix.
+
 
 \begin{figure}[htp]
 

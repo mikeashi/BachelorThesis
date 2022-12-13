@@ -1,0 +1,46 @@
+\chapter{PokerShark Preconditions}
+\label{appendix:pokerSharkPreconditions}
+
+
+    \begin{tabular}{|l|l|}
+    \hline
+    \textit{\textbf{IsAggressive}}                & Is the game dominated by aggrissive players                     \\ \hline
+    \textit{\textbf{IsLoose}}                     & Is the game dominated by loose players                          \\ \hline
+    \textit{\textbf{IsPassive}}                   & Is the game dominated by passive players                        \\ \hline
+    \textit{\textbf{IsTight}}                     & Is the game dominated by tight players                          \\ \hline
+    \textit{\textbf{OneOpponent}}                 & Is there only one active player left                            \\ \hline
+    \textit{\textbf{PocketEquityGreaterThan}}     & Does the hand of the bot have more equity than the given number \\ \hline
+    \textit{\textbf{PocketEquityLessThan}}        & Does the hand of the bot have less equity than the given number \\ \hline
+    \textit{\textbf{PocketFromGroup}}             & Does the hand of the bot belongs to the given group             \\ \hline
+    \textit{\textbf{PocketIsOneOf}}               & Does the hand of the bot one of the hands given                 \\ \hline
+    \textit{\textbf{InBigBlind}}                  & Does the bot sit in the big blind seat on the table             \\ \hline
+    \textit{\textbf{InBlind}}                     & Does the bot sit in a blind seat on the table                   \\ \hline
+    \textit{\textbf{InEarly}}                     & Does the bot have an early position                             \\ \hline
+    \textit{\textbf{InLate}}                      & Does the bot have a late position                               \\ \hline
+    \textit{\textbf{InMiddle}}                    & Does the bot have a middle position                             \\ \hline
+    \textit{\textbf{InSmallBlind}}                & Does the bot sit in the small blind seat on the table           \\ \hline
+    \textit{\textbf{FirstToPot}}                  & Nobody has called or raised yet.                                \\ \hline
+    \textit{\textbf{FirstToRaise}}                & Nobady has raised yet.                                          \\ \hline
+    \textit{\textbf{OnlyCalls}}                   & Somebody has already called, but no raises were made yet.       \\ \hline
+    \textit{\textbf{SecondToRaise}}               & One player has already raised.                                  \\ \hline
+    \textit{\textbf{ThreeBBCall}}                 & It costs three times the bigblind to call                       \\ \hline
+    \textit{\textbf{TwoOrMoreRaises}}             & There is at least more than one raise                           \\ \hline
+    \textit{\textbf{ZeroCostCall}}                & It costs nothing to call                                        \\ \hline
+    \textit{\textbf{CallRecommendation}}          & The planner has produced a call recommendation                  \\ \hline
+    \textit{\textbf{FoldRecommendation}}          & The planner has produced a fold recommendation                  \\ \hline
+    \textit{\textbf{RaiseRecommendation}}         & The planner has produced a raise recommendation                 \\ \hline
+    \textit{\textbf{NoRecommendation}}            & The planner has not produced any recommendation yet             \\ \hline
+    \textit{\textbf{NotTooRiskyMinRaise}}         & It is not risky to raise the minimum legal amount               \\ \hline
+    \textit{\textbf{RiskAverseAttitude}}          & The bot has a risk-averse attitude                              \\ \hline
+    \textit{\textbf{RiskNeutralAttitude}}         & The bot has a risk-neutral attitude                             \\ \hline
+    \textit{\textbf{RiskSeekingAttitude}}         & The bot has a risk-seeking attitude                             \\ \hline
+    \textit{\textbf{TooRiskyCall}}                & It is to risky to call                                          \\ \hline
+    \textit{\textbf{TooRiskyRaiseRecommendation}} & It is too risky to raise the recommended amount                 \\ \hline
+    \textit{\textbf{InPreflop}}                   & The game is in the preflop stage                                \\ \hline
+    \textit{\textbf{NoDecision}}                  & The planner has not produced a decision yet                     \\ \hline
+    \textit{\textbf{Occasionally}}                & Randomly true less than 30\% of the time                        \\ \hline
+    \textit{\textbf{RaiseOrCallDecision}}         & Did the planner produce a raise or a call decision              \\ \hline
+    \textit{\textbf{TooFishy}}                    & Is the opponent too loose                                       \\ \hline
+    \textit{\textbf{CallingFish}}                 & Is the opponent aggrisve loose                                  \\ \hline
+    \textit{\textbf{LooseRaiser}}                 & The raising player is too loose                                 \\ \hline
+    \end{tabular}
